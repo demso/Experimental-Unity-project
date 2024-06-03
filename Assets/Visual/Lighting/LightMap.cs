@@ -72,12 +72,16 @@ public class LightMap
         
         if (rayHandler.shadows)
         {
+            rayHandler.commandBuffer.Clear();
+            rayHandler.commandBuffer.SetRenderTarget(rayHandler.lastActiveTexture);
             if (RayHandler.isDiffuse)
             {
                 diffuseShader.SetTexture("_MainTex", frameBuffer);
                 diffuseShader.SetColor("_Ambient", c);
-                lightMapMesh.GetComponent<MeshRenderer>().material = diffuseShader;
-                lightMapMesh.GetComponent<MeshRenderer>().sortingOrder = 4;
+                MeshRenderer renderer  = lightMapMesh.GetComponent<MeshRenderer>();
+                renderer.material = diffuseShader;
+                renderer.sortingOrder = 4;
+                rayHandler.commandBuffer.DrawRenderer(renderer, diffuseShader);
                 //diffuseShader.SetInteger("SrcMode", BlendMode.DstColor);
                 //diffuseShader.Parameters["Ambient"].SetValue(c.ToVector4());
                 //diffuseShader.Parameters["RenderTargetTexture"].SetValue(frameBuffer);
@@ -92,8 +96,10 @@ public class LightMap
             {
                 shadowShader.SetTexture("_MainTex", frameBuffer);
                 shadowShader.SetColor("_Ambient", c);
-                lightMapMesh.GetComponent<MeshRenderer>().material = shadowShader;
-                lightMapMesh.GetComponent<MeshRenderer>().sortingOrder = 4;
+                MeshRenderer renderer  = lightMapMesh.GetComponent<MeshRenderer>();
+                renderer.material = shadowShader;
+                renderer.sortingOrder = 4;
+                rayHandler.commandBuffer.DrawRenderer(renderer, shadowShader);
                 //shadowShader.Parameters["Ambient"].SetValue(new Vector4((float)c.R * (float)c.A / 255f,
                 //    (float)c.G * (float)c.A / 255f, (float)c.B * (float)c.A / 255f, 1f - (float)c.A / 255f));
                 //shadowShader.Parameters["RenderTargetTexture"].SetValue(frameBuffer);
@@ -104,6 +110,7 @@ public class LightMap
                 //graphicsDevice.SetVertexBuffer(lightMapMesh);
                 //graphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, lightMapMesh.VertexCount);
             }
+            Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
         }
         else if (needed)
         {
@@ -142,11 +149,11 @@ public class LightMap
     {
         DisposeShaders();
 
-        shadowShader = new Material(Shader.Find("ShadowShader"));
+        shadowShader = new Material(Shader.Find("z/ShadowShader"));
 
-        diffuseShader = new Material(Shader.Find("DiffuseShader"));
+        diffuseShader = new Material(Shader.Find("z/DiffuseShader"));
 
-        withoutShadowShader = new Material(Shader.Find("WithoutShadowShader"));
+        withoutShadowShader = new Material(Shader.Find("z/WithoutShadowSHader"));
 
     }
 
@@ -195,6 +202,7 @@ public class LightMap
         mesh.triangles = triangles;
 
         GameObject gameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
+        gameObject.SetActive(false);
         gameObject.GetComponent<MeshFilter>().mesh = mesh;
         
         return gameObject;

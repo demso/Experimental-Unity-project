@@ -1,16 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public abstract class Light : IDisposable
+public abstract class Light : MonoBehaviour
 {
     protected static readonly Color DefaultColor = new Color(0.75f, 0.75f, 0.5f, 0.75f);
     protected static readonly Color ZeroColorBits = Color.clear;
     protected static readonly Color OneColorBits = Color.white;
     protected const int MinRays = 3;
 
-    protected Color color = new Color();
+    public Color color = Color.cyan;
     protected Vector2 tmpPosition = new Vector2();
 
     protected RayHandler rayHandler;
@@ -23,14 +25,14 @@ public abstract class Light : IDisposable
     protected bool dirty = true;
     protected bool ignoreBody = false;
 
-    protected int rayNum;
+    public int rayNum = 30;
     protected int lightVertexNum;
     protected int softShadowVertexNum;
 
-    protected float distance;
-    protected float direction;
-    protected Color colorF;
-    protected float softShadowLength = 2.5f;
+    public float distance = 50;
+    public float direction;
+    //protected Color colorF;
+    public float softShadowLength = 2.5f;
 
     protected Mesh lightMesh;
     protected Mesh softShadowMesh;
@@ -39,8 +41,6 @@ public abstract class Light : IDisposable
     protected float[] my;
     protected float[] f;
     protected int m_index = 0;
-    
-    public GameObject gameObject;
 
     //protected static readonly LightData tmpData = new LightData(0f);
 
@@ -60,16 +60,19 @@ public abstract class Light : IDisposable
         rayHandler.lightList.Add(this);
         this.rayHandler = rayHandler;
         CreateLightMeshGameObject();
-        SetRayNum(rays);
-        SetColor(color);
-        SetDistance(distance);
-        SetSoftnessLength(distance * 0.1f);
-        SetDirection(directionDegree);
+        SetRayNum(this.rayNum);
+        SetColor(this.color);
+        SetDistance(this.distance);
+        SetSoftnessLength(this.distance * 0.1f);
+        SetDirection(direction);
     }
 
     private void CreateLightMeshGameObject()
     {
-        gameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
+        ((Component)this).gameObject.AddComponent<MeshFilter>();
+        ((Component)this).gameObject.AddComponent<MeshRenderer>();
+        //lightMeshGameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
+        gameObject.SetActive(false);
     }
 
     public abstract void Update();

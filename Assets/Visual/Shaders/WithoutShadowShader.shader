@@ -1,4 +1,4 @@
-Shader "Hidden/WithoutShadowSHader"
+Shader "z/WithoutShadowSHader"
 {
     Properties
     {

@@ -57,6 +57,8 @@ public abstract class PositionalLight : Light
 
     public override void Update()
     {
+        SetPosition(gameObject.transform.position);
+        
         UpdateBody();
 
         if (Cull()) return;

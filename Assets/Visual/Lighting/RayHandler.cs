@@ -11,13 +11,25 @@ public class RayHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        int w = Screen.width;
+        int h = Screen.height;
+        renTar = new RenderTexture(w, h, 0);
+        data = new int[w * h];
+        resizeFBO(w / 4, h / 4);
+        lightShader = new Material(Shader.Find("z/LightShader"));
+        commandBuffer = new CommandBuffer();
+        //PointLight light = new PointLight(this, 30, Color.cyan, 50, 3, 3);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        update();
+    }
+
+    private void OnPostRender()
+    {
+        render();
     }
 
     static float GAMMA_COR = 0.625f;
@@ -79,16 +91,7 @@ public class RayHandler : MonoBehaviour
 
     public CommandBuffer commandBuffer;
 
-    public RayHandler()
-    {
-        int w = Screen.width;
-        int h = Screen.height;
-        renTar = new RenderTexture(w, h, 0);
-        data = new int[w * h];
-        resizeFBO(w / 4, h / 4);
-        lightShader = new Material(Shader.Find("LightShader"));
-        commandBuffer = new CommandBuffer();
-    }
+    
 
     ~RayHandler()
     {
@@ -134,6 +137,8 @@ public class RayHandler : MonoBehaviour
         }
     }
 
+    public RenderTexture lastActiveTexture;
+
     public void prepareRender()
     {
         lightRenderedLastFrame = 0;
@@ -144,6 +149,7 @@ public class RayHandler : MonoBehaviour
         if (useLightMap)
         {
             lightMap.frameBuffer.Release();
+            lastActiveTexture = RenderTexture.active;
             commandBuffer.SetRenderTarget(lightMap.frameBuffer);
             //Core.GraphicsDevice.SetRenderTarget(lightMap.frameBuffer);
             //Core.GraphicsDevice.Clear(Color.Transparent);
@@ -156,7 +162,7 @@ public class RayHandler : MonoBehaviour
         //lightShader.Parameters["WorldViewProjection"].SetValue(combined);
         //lightShader.CurrentTechnique.Passes[0].Apply();
 
-
+        
         foreach (Light light in lightList)
         {
             //if (customLightShader != null) updateLightShaderPerLight(light);
