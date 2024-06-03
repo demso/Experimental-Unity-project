@@ -18,18 +18,23 @@ public class RayHandler : MonoBehaviour
         resizeFBO(w / 4, h / 4);
         lightShader = new Material(Shader.Find("z/LightShader"));
         commandBuffer = new CommandBuffer();
+        setAmbientLight(0,0,0,1);
+        setShadows(true);
+        useDiffuseLight(true);
         //PointLight light = new PointLight(this, 30, Color.cyan, 50, 3, 3);
     }
 
     // Update is called once per frame
     void Update()
     {
-        update();
+        updateAndRender();
+        //OnPostRender();
+       
     }
 
     private void OnPostRender()
     {
-        render();
+        //render();
     }
 
     static float GAMMA_COR = 0.625f;
@@ -125,16 +130,17 @@ public class RayHandler : MonoBehaviour
     public void updateAndRender() //RenderTarget2D
     {
         //RenderHere = ren;
-        update();
-        render();
+        updateLights();
+        renderLights();
     }
 
-    public void update()
+    public void updateLights()
     {
         foreach (Light light in lightList)
         {
             light.Update();
         }
+        
     }
 
     public RenderTexture lastActiveTexture;
@@ -174,7 +180,7 @@ public class RayHandler : MonoBehaviour
             lightMap.GaussianBlur();
     }
 
-    public void render()
+    public void renderLights()
     {
         prepareRender();
         lightMap.Render();
@@ -205,26 +211,26 @@ public class RayHandler : MonoBehaviour
 
     public void Dispose()
     {
-        removeAll();
+        //removeAll();
         //renTar.Dispose();
         //if (lightMap != null) lightMap.Dispose();
         //if (lightShader != null) lightShader.Dispose();
     }
 
-    public void removeAll()
-    {
-        foreach (Light light in lightList)
-        {
-            light.Dispose();
-        }
-        lightList.Clear();
-
-        foreach (Light light in disabledLights)
-        {
-            light.Dispose();
-        }
-        disabledLights.Clear();
-    }
+    // public void removeAll()
+    // {
+    //     foreach (Light light in lightList)
+    //     {
+    //         light.Dispose();
+    //     }
+    //     lightList.Clear();
+    //
+    //     foreach (Light light in disabledLights)
+    //     {
+    //         light.Dispose();
+    //     }
+    //     disabledLights.Clear();
+    // }
 
     public void setCulling(bool culling)
     {

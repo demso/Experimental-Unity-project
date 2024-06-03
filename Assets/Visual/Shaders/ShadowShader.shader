@@ -31,6 +31,10 @@ Shader "z/ShadowShader"
                 float4 vertex : SV_POSITION;
             };
 
+            sampler2D _MainTex;
+            fixed4 _Ambient;
+            
+
             v2f vert (appdata v)
             {
                 v2f o;
@@ -38,8 +42,6 @@ Shader "z/ShadowShader"
                 o.uv = v.uv;
                 return o;
             }
-
-            sampler2D _MainTex;
 
             fixed4 frag (v2f i) : SV_Target
             {

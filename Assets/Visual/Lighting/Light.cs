@@ -55,15 +55,15 @@ public abstract class Light : MonoBehaviour
     // protected readonly Vector2 tmpVec = new Vector2();
     // protected readonly Vector2 center = new Vector2();
 
-    public Light(RayHandler rayHandler, int rays, Color color, float distance, float directionDegree)
+    public void Awake()
     {
+        rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();
         rayHandler.lightList.Add(this);
-        this.rayHandler = rayHandler;
         CreateLightMeshGameObject();
-        SetRayNum(this.rayNum);
-        SetColor(this.color);
-        SetDistance(this.distance);
-        SetSoftnessLength(this.distance * 0.1f);
+        SetRayNum(rayNum);
+        SetColor(color);
+        SetDistance(distance);
+        SetSoftnessLength(distance * 0.1f);
         SetDirection(direction);
     }
 
@@ -110,14 +110,14 @@ public abstract class Light : MonoBehaviour
         {
             color = DefaultColor;
         }
-        colorF = color;
+       // colorF = color;
         if (staticLight) dirty = true;
     }
 
     public void SetColor(float r, float g, float b, float a)
     {
         color = new Color(r, g, b, a);
-        colorF = color;
+        //colorF = color;
         if (staticLight) dirty = true;
     }
 

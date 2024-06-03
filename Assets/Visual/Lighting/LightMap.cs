@@ -81,7 +81,8 @@ public class LightMap
                 MeshRenderer renderer  = lightMapMesh.GetComponent<MeshRenderer>();
                 renderer.material = diffuseShader;
                 renderer.sortingOrder = 4;
-                rayHandler.commandBuffer.DrawRenderer(renderer, diffuseShader);
+                rayHandler.commandBuffer.DrawRenderer(renderer, shadowShader);
+                //Graphics.DrawTexture(new Rect(0,0, Screen.width, Screen.height), frameBuffer, diffuseShader);
                 //diffuseShader.SetInteger("SrcMode", BlendMode.DstColor);
                 //diffuseShader.Parameters["Ambient"].SetValue(c.ToVector4());
                 //diffuseShader.Parameters["RenderTargetTexture"].SetValue(frameBuffer);

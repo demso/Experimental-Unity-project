@@ -33,7 +33,7 @@ Shader "z/LightShader"
             v2f vert (appdata v, uint vertexID : SV_VertexID)
             {
                 v2f o;
-                o.vertex = UnityObjectToView(v.vertex);
+                o.vertex = UnityObjectToClipPos(v.vertex);
                 //o.color = v.color * S;
                 
                 return o;

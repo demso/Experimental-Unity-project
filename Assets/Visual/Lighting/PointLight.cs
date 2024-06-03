@@ -6,21 +6,6 @@ using UnityEngine;
 public class PointLight : PositionalLight
 {
     /// <summary>
-    /// Creates light shaped as a circle with default radius (15f), color and
-    /// position (0f, 0f)
-    /// 
-    /// @param rayHandler
-    ///            not {@code null} instance of RayHandler
-    /// @param rays
-    ///            number of rays - more rays make light to look more realistic
-    ///            but will decrease performance, can't be less than MIN_RAYS
-    /// </summary>
-    public PointLight(RayHandler rayHandler, int rays)
-        : this(rayHandler, rays, Light.DefaultColor, 15f, 0f, 0f)
-    {
-    }
-
-    /// <summary>
     /// Creates light shaped as a circle with given radius
     /// 
     /// @param rayHandler
@@ -37,9 +22,14 @@ public class PointLight : PositionalLight
     /// @param y
     ///            vertical position in world coordinates
     /// </summary>
-    public PointLight(RayHandler rayHandler, int rays, Color color, float distance, float x, float y)
-        : base(rayHandler, rays, color, distance, x, y, 0f)
+    public PointLight()
     {
+        direction = 0;
+    }
+
+    public new void Awake()
+    {
+        base.Awake();
     }
 
     public override void Update()

@@ -25,16 +25,16 @@ public abstract class PositionalLight : Light
     private Vector3[] vertices;
     private Color[] colors;
 
-    public PositionalLight(RayHandler rayHandler, int rays, Color color, float distance, float x, float y,
-        float directionDegree) : base(rayHandler, rays, color, distance, directionDegree)
+    public new void Awake()
     {
-        start.x = x;
-        start.x = y;
+        base.Awake();
+        start = gameObject.transform.position;
 
         lightMesh = new Mesh();
         softShadowMesh = new Mesh();
         vertices = new Vector3[lightVertexNum];
         colors = new Color[lightVertexNum];
+        SetRayNum(rayNum);
         SetMesh();
     }
 
@@ -244,6 +244,10 @@ public abstract class PositionalLight : Light
         // _fractions = new float[lightVertexNum];
         // _softShadowFractions = new float[rayNum * 2];
         triangles = new int[lightVertexNum * 2];
+        try
+        {
+
+        
         for (var i = 0; i < rayNum; i += 1)
         {
             vertices[vertexIndex] = start;
@@ -275,6 +279,7 @@ public abstract class PositionalLight : Light
 
         lightMesh.SetVertices(vertices, 0, vertexIndex);
         lightMesh.SetColors(colors, 0, vertexIndex);
+        lightMesh.triangles = new int[vertexIndex];
         Array.Copy(triangles, lightMesh.triangles, vertexIndex);
 
         if (!soft || xray || rayHandler.pseudo3d) return;
@@ -320,7 +325,15 @@ public abstract class PositionalLight : Light
 
         softShadowMesh.SetVertices(vertices, 0, vertexIndex);
         softShadowMesh.SetColors(colors, 0, vertexIndex);
+        softShadowMesh.triangles = new int[triangleIndex];
         Array.Copy(triangles, softShadowMesh.triangles, triangleIndex);
+        
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public float GetBodyOffsetX()
