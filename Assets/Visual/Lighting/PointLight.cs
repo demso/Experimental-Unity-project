@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PointLight : PositionalLight
 {
@@ -30,7 +29,24 @@ public class PointLight : PositionalLight
     public new void Awake()
     {
         base.Awake();
+        // renderTexture.Release();
+        // renderTexture.width = Screen.width;
+        // renderTexture.height = Screen.height;
+        // renderTexture.depth = 0;
+        // renderTexture.Create();
+        pars = new RenderParams(rayHandler.lightShader);
+        //pars.layer = 0;
+        pars.renderingLayerMask = 5;
+        
+        
+        cb = new CommandBuffer();
     }
+
+    public RenderTexture renderTexture;
+    public CommandBuffer cb;
+
+
+    private RenderParams pars;
 
     public override void Update()
     {
@@ -50,14 +66,26 @@ public class PointLight : PositionalLight
         gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
         //gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
         lightMesh.bounds = new Bounds(new Vector3(0,0), new Vector3(100, 100));
+        
+        renderTexture.Release();
+        renderTexture.width = Screen.width;
+        renderTexture.height = Screen.height;
+        renderTexture.depth = 0;
+        renderTexture.Create();
+        cb.SetRenderTarget(renderTexture);
+        Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        cb.SetViewProjectionMatrices(cam.worldToCameraMatrix, cam.projectionMatrix);
+        cb.DrawMesh(lightMesh, gameObject.transform.localToWorldMatrix, gameObject.GetComponent<MeshRenderer>().material);
+        Graphics.ExecuteCommandBuffer(cb);
+        //Graphics.DrawTexture(new Rect(0,0,Screen.width, Screen.height), renderTexture);
+        // var pars = new RenderParams(rayHandler.lightShader);
+        // pars.layer = 0;
+        // pars.renderingLayerMask = 5;
+        // pars.rendererPriority = -1;
+        // Graphics.RenderMesh(pars, lightMesh, 0, gameObject.transform.localToWorldMatrix);
+        
     }
-
-    /// <summary>
-    /// Sets light distance
-    /// 
-    /// <p>MIN value capped to 0.1f meter
-    /// <p>Actual recalculations will be done only on {@link #update()} call
-    /// </summary>
+    
     public override void SetDistance(float dist)
     {
         dist *= RayHandler.gammaCorrectionParameter;

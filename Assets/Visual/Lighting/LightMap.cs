@@ -73,7 +73,6 @@ public class LightMap
         if (rayHandler.shadows)
         {
             rayHandler.commandBuffer.Clear();
-            rayHandler.commandBuffer.SetRenderTarget(rayHandler.lastActiveTexture);
             if (RayHandler.isDiffuse)
             {
                 diffuseShader.SetTexture("_MainTex", frameBuffer);

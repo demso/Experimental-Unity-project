@@ -68,9 +68,10 @@ public abstract class PositionalLight : CustomLight
         gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
         gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
         
-        // rayHandler.commandBuffer.Clear();
-        // rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
-        // Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
+        
+        //rayHandler.commandBuffer.Clear();
+        rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
+        Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
         // Core.GraphicsDevice.SetVertexBuffer(lightMesh);
         // Core.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, lightVertexNum);
 

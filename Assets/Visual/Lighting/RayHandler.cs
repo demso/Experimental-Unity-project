@@ -9,6 +9,7 @@ using UnityEngine.SocialPlatforms.Impl;
 public class RayHandler : MonoBehaviour
 {
     // Start is called before the first frame update
+    private Camera camera;
     void Start()
     {
         int w = Screen.width;
@@ -21,7 +22,7 @@ public class RayHandler : MonoBehaviour
         setAmbientLight(0,0,0,1);
         setShadows(true);
         useDiffuseLight(false);
-        
+        camera = GameObject.Find("Main Camera").GetComponent<Camera>();
         //PointLight light = new PointLight(this, 30, Color.cyan, 50, 3, 3);
     }
 
@@ -96,9 +97,7 @@ public class RayHandler : MonoBehaviour
     public bool Toggle = true;
 
     public CommandBuffer commandBuffer;
-
     
-
     ~RayHandler()
     {
         Dispose();
@@ -144,20 +143,18 @@ public class RayHandler : MonoBehaviour
         
     }
 
-    public RenderTexture lastActiveTexture;
-
     public void prepareRender()
     {
         lightRenderedLastFrame = 0;
-
-        //Core.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+        
+        
 
         bool useLightMap = shadows || blur;
         if (useLightMap)
         {
             lightMap.frameBuffer.Release();
-            lastActiveTexture = RenderTexture.active;
             commandBuffer.SetRenderTarget(lightMap.frameBuffer);
+            commandBuffer.Clear();
             //Core.GraphicsDevice.SetRenderTarget(lightMap.frameBuffer);
             //Core.GraphicsDevice.Clear(Color.Transparent);
         }
