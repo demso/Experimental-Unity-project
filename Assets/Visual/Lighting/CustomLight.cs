@@ -267,6 +267,7 @@ public abstract class CustomLight : MonoBehaviour
         rayNum = rays;
         lightVertexNum = rays * 3;
         softShadowVertexNum = rays * 2;
+        
 
         mx = new float[rays + 1];
         my = new float[rays + 1];

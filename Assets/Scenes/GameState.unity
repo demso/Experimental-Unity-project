@@ -14301,7 +14301,7 @@ MonoBehaviour:
   soft: 0
   staticLight: 0
   rayNum: 1300
-  distance: 15
+  distance: 50
   direction: 0
   softShadowLength: 2.5
   start: {x: 0, y: 0}
@@ -14340,7 +14340,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 70fb1be8fc361f84e8fe5425b1964b8f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

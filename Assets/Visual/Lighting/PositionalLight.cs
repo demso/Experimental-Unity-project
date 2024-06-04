@@ -35,8 +35,7 @@ public abstract class PositionalLight : CustomLight
         //lightMesh.bounds = new Bounds(new Vector3(-100, -100), new Vector3(100, 100));
         softShadowMesh = new Mesh();
         softShadowMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
-        vertices = new Vector3[lightVertexNum];
-        colors = new Color[lightVertexNum];
+        
         SetRayNum(rayNum);
         SetMesh();
     }
@@ -55,7 +54,7 @@ public abstract class PositionalLight : CustomLight
         
         rayHandler.lightRenderedLastFrame++;
         gameObject.GetComponent<MeshFilter>().mesh = lightMesh;//
-        gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;//
+        //gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;//
         // gameObject.GetComponent<MeshRenderer>().sortingOrder = 0;
         // gameObject.GetComponent<MeshRenderer>().renderingLayerMask = 0;
         //gameObject.GetComponent<MeshRenderer>().rendererPriority = -1;
@@ -179,6 +178,10 @@ public abstract class PositionalLight : CustomLight
         cos = new float[rays];
         endX = new float[rays];
         endY = new float[rays];
+        
+        vertices = new Vector3[lightVertexNum];
+        colors = new Color[lightVertexNum];
+        triangles = new int[lightVertexNum * 2];
     }
 
     protected bool Cull()
@@ -249,7 +252,6 @@ public abstract class PositionalLight : CustomLight
     {
         vertexIndex = 0;
         rayEndIndex = 0;
-        triangles = new int[lightVertexNum * 2];
         
         for (var i = 0; i < rayNum; i += 1)
         {

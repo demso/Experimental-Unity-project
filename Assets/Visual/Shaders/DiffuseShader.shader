@@ -9,6 +9,7 @@ Shader "z/DiffuseShader"
     }
     SubShader
     {
+        Tags { "Queue"="Transparent" }
         // No culling or depth
         Cull Off ZWrite Off ZTest Always
 
