@@ -321,7 +321,7 @@ public abstract class CustomLight : MonoBehaviour
     //    get => _collisionGroup;
     //}
 
-    internal void rayHit(RaycastHit2D rayHit)//Collider2D fixture, Vector2 point, Vector2 normal, float fraction
+    public void RayHit(RaycastHit2D rayHit)//Collider2D fixture, Vector2 point, Vector2 normal, float fraction
     {
         
         //if ((GlobalCollidesWith != null && GlobalCollisionCategories != null || GlobalCollisionGroup != 0) && !GlobalContactFilter(fixture))

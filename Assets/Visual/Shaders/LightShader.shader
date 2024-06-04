@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "z/LightShader"
 {
     Properties
@@ -29,11 +31,12 @@ Shader "z/LightShader"
                 float4 vertex : SV_POSITION;
                 fixed4 color : COLOR0;
             };
-
+ 
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex =  UnityObjectToClipPos (v.vertex);
+                //o.vertex.w = v.vertex.w;
                 o.color = v.color;
                 
                 return o;

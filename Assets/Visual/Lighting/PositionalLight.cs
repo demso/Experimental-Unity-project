@@ -10,7 +10,7 @@ public abstract class PositionalLight : CustomLight
     private Color tmpColor = new();
 
     protected Vector2 tmpEnd = new();
-    protected Vector2 start = new();
+    public Vector2 start = new();
 
     protected Rigidbody2D body;
     protected float bodyOffsetX;
@@ -29,10 +29,10 @@ public abstract class PositionalLight : CustomLight
     public new void Awake()
     {
         base.Awake();
-        start = gameObject.transform.position;
+        //start = gameObject.transform.position;
 
         lightMesh = new Mesh();
-        lightMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
+        //lightMesh.bounds = new Bounds(new Vector3(-100, -100), new Vector3(100, 100));
         softShadowMesh = new Mesh();
         softShadowMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
         vertices = new Vector3[lightVertexNum];
@@ -43,7 +43,7 @@ public abstract class PositionalLight : CustomLight
 
     public override void Update()
     {
-        SetPosition(gameObject.transform.position);
+        //SetPosition(gameObject.transform.position);
         
         UpdateBody();
 
@@ -146,30 +146,30 @@ public abstract class PositionalLight : CustomLight
         return Contains(pos.x, pos.y);
     }
 
-    public override bool Contains(float x, float y)
-    {
-        // fast fail
-        var x_d = start.x - x;
-        var y_d = start.y - y;
-        var dst2 = x_d * x_d + y_d * y_d;
-        if (distance * distance <= dst2) return false;
-
-        // actual check
-        var oddNodes = false;
-        var x2 = mx[rayNum] = start.x;
-        var y2 = my[rayNum] = start.y;
-        float x1, y1;
-        for (var i = 0; i <= rayNum; x2 = x1, y2 = y1, ++i)
-        {
-            x1 = mx[i];
-            y1 = my[i];
-            if ((y1 < y && y2 >= y) || (y1 >= y && y2 < y))
-                if ((y - y1) / (y2 - y1) * (x2 - x1) < x - x1)
-                    oddNodes = !oddNodes;
-        }
-
-        return oddNodes;
-    }
+    // public override bool Contains(float x, float y)
+    // {
+    //     // fast fail
+    //     var x_d = start.x - x;
+    //     var y_d = start.y - y;
+    //     var dst2 = x_d * x_d + y_d * y_d;
+    //     if (distance * distance <= dst2) return false;
+    //
+    //     // actual check
+    //     var oddNodes = false;
+    //     var x2 = mx[rayNum] = start.x;
+    //     var y2 = my[rayNum] = start.y;
+    //     float x1, y1;
+    //     for (var i = 0; i <= rayNum; x2 = x1, y2 = y1, ++i)
+    //     {
+    //         x1 = mx[i];
+    //         y1 = my[i];
+    //         if ((y1 < y && y2 >= y) || (y1 >= y && y2 < y))
+    //             if ((y - y1) / (y2 - y1) * (x2 - x1) < x - x1)
+    //                 oddNodes = !oddNodes;
+    //     }
+    //
+    //     return oddNodes;
+    // }
 
     protected override void SetRayNum(int rays)
     {
@@ -212,15 +212,30 @@ public abstract class PositionalLight : CustomLight
         {
             m_index = i;
             f[i] = 1f;
-            tmpEnd.x = endX[i] + start.x;
-            mx[i] = tmpEnd.x;
-            tmpEnd.y = endY[i] + start.y;
-            my[i] = tmpEnd.y;
+            
+            mx[i] = endX[i];
+            my[i] = endY[i];
+            
+            tmpEnd.x = endX[i];
+            tmpEnd.y = endY[i];
+            
             if (!xray && !rayHandler.pseudo3d)
-                rayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance = (tmpEnd - start).magnitude));
+                RayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance));
         }
 
         SetMesh();
+    }
+    
+    public new void RayHit(RaycastHit2D rayHit)
+    {
+        if (rayHit.collider != null)
+        {
+            Vector2 point = rayHit.point;
+            float fraction = rayHit.fraction;
+            mx[m_index] = point.x - start.x;
+            my[m_index] = point.y - start.y;
+            f[m_index] = fraction;
+        }
     }
 
     private int vertexIndex = 0;
@@ -238,7 +253,7 @@ public abstract class PositionalLight : CustomLight
         
         for (var i = 0; i < rayNum; i += 1)
         {
-            vertices[vertexIndex] = start;
+            vertices[vertexIndex] = Vector3.zero;
             colors[vertexIndex] = color;
             triangles[vertexIndex] = vertexIndex;
             vertexIndex++;

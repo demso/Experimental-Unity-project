@@ -34,7 +34,10 @@ public class PointLight : PositionalLight
 
     public override void Update()
     {
-        UpdateBody();
+        //Debug.Log(gameObject.transform.position);
+        SetPosition(gameObject.transform.position);
+        
+        //UpdateBody();
         if (dirty) SetEndPoints();
 
         if (Cull()) return;
@@ -46,6 +49,7 @@ public class PointLight : PositionalLight
         rayHandler.lightRenderedLastFrame++;
         gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
         gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
+        lightMesh.bounds = new Bounds(new Vector3(0,0), new Vector3(100, 100));
     }
 
     /// <summary>
