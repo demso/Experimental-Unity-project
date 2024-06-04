@@ -5,6 +5,7 @@ Shader "z/LightShader"
     }
     SubShader
     {
+        Tags { "Queue"="Transparent" }
         // No culling or depth
         Cull Off ZWrite Off ZTest Always
 
@@ -21,7 +22,6 @@ Shader "z/LightShader"
             {
                 float4 vertex : POSITION;
                 fixed4 color : COLOR0;
-                //float S;
             };
 
             struct v2f
@@ -30,11 +30,11 @@ Shader "z/LightShader"
                 fixed4 color : COLOR0;
             };
 
-            v2f vert (appdata v, uint vertexID : SV_VertexID)
+            v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                //o.color = v.color * S;
+                o.color = v.color;
                 
                 return o;
             }

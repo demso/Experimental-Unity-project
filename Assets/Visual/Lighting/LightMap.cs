@@ -151,6 +151,7 @@ public class LightMap
         DisposeShaders();
 
         shadowShader = new Material(Shader.Find("z/ShadowShader"));
+        
 
         diffuseShader = new Material(Shader.Find("z/DiffuseShader"));
 

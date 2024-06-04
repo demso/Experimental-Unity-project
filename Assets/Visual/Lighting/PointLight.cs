@@ -42,6 +42,10 @@ public class PointLight : PositionalLight
 
         dirty = false;
         UpdateMesh();
+        
+        rayHandler.lightRenderedLastFrame++;
+        gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
+        gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
     }
 
     /// <summary>
@@ -62,14 +66,14 @@ public class PointLight : PositionalLight
     /// </summary>
     void SetEndPoints()
     {
-        float angleNum = 360f / (rayNum - 1);
+        float angleNum = 360f / (rayNum);
         for (int i = 0; i < rayNum; i++)
         {
             float angle = angleNum * i;
-            sin[i] = (float)Math.Sin(angle);
+            sin[i] = (float)Math.Sin( Mathf.Deg2Rad * angle);
             if (Math.Abs(sin[i]) < 0.001)
-                sin[i] = 0;
-            cos[i] = (float)Math.Cos(angle);
+                sin[i] = 0; 
+            cos[i] = (float)Math.Cos( Mathf.Deg2Rad * angle);
             if (Math.Abs(cos[i]) < 0.001)
                 cos[i] = 0;
             endY[i] = distance * sin[i];

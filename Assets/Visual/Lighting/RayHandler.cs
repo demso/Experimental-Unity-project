@@ -20,14 +20,15 @@ public class RayHandler : MonoBehaviour
         commandBuffer = new CommandBuffer();
         setAmbientLight(0,0,0,1);
         setShadows(true);
-        useDiffuseLight(true);
+        useDiffuseLight(false);
+        
         //PointLight light = new PointLight(this, 30, Color.cyan, 50, 3, 3);
     }
 
     // Update is called once per frame
     void Update()
     {
-        updateAndRender();
+        //updateAndRender();
         //OnPostRender();
        
     }
@@ -59,13 +60,13 @@ public class RayHandler : MonoBehaviour
     //internal Matrix combined = new Matrix();
     internal Color ambientLight = new Color();
 
-    internal List<Light> lightList = new List<Light>();
-    internal List<Light> disabledLights = new List<Light>();
+    internal List<CustomLight> lightList = new List<CustomLight>();
+    internal List<CustomLight> disabledLights = new List<CustomLight>();
 
     public LightMap lightMap;
     internal Material lightShader;
 
-    internal bool culling = true;
+    internal bool culling = false;
     internal bool shadows = true;
     bool blur = true;
 
@@ -136,7 +137,7 @@ public class RayHandler : MonoBehaviour
 
     public void updateLights()
     {
-        foreach (Light light in lightList)
+        foreach (CustomLight light in lightList)
         {
             light.Update();
         }
@@ -169,7 +170,7 @@ public class RayHandler : MonoBehaviour
         //lightShader.CurrentTechnique.Passes[0].Apply();
 
         
-        foreach (Light light in lightList)
+        foreach (CustomLight light in lightList)
         {
             //if (customLightShader != null) updateLightShaderPerLight(light);
             light.Render();
@@ -193,7 +194,7 @@ public class RayHandler : MonoBehaviour
 
     public bool pointAtLight(float x, float y)
     {
-        foreach (Light light in lightList)
+        foreach (CustomLight light in lightList)
         {
             if (light.Contains(x, y)) return true;
         }
@@ -202,7 +203,7 @@ public class RayHandler : MonoBehaviour
 
     public bool pointAtShadow(float x, float y)
     {
-        foreach (Light light in lightList)
+        foreach (CustomLight light in lightList)
         {
             if (light.Contains(x, y)) return false;
         }

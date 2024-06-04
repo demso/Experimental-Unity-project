@@ -5,22 +5,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public abstract class Light : MonoBehaviour
+public abstract class CustomLight : MonoBehaviour
 {
     protected static readonly Color DefaultColor = new Color(0.75f, 0.75f, 0.5f, 0.75f);
     protected static readonly Color ZeroColorBits = Color.clear;
     protected static readonly Color OneColorBits = Color.white;
     protected const int MinRays = 3;
 
-    public Color color = Color.cyan;
+    public Color color = Color.red;
     protected Vector2 tmpPosition = new Vector2();
 
     protected RayHandler rayHandler;
 
-    protected bool active = true;
-    protected bool soft = true;
+    public bool active = true;
+    public bool soft = false;
     protected bool xray = false;
-    protected bool staticLight = false;
+    public bool staticLight = false;
     protected bool culled = false;
     protected bool dirty = true;
     protected bool ignoreBody = false;
@@ -69,10 +69,10 @@ public abstract class Light : MonoBehaviour
 
     private void CreateLightMeshGameObject()
     {
-        ((Component)this).gameObject.AddComponent<MeshFilter>();
-        ((Component)this).gameObject.AddComponent<MeshRenderer>();
+        // ((Component)this).gameObject.AddComponent<MeshFilter>();
+        // ((Component)this).gameObject.AddComponent<MeshRenderer>();
         //lightMeshGameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 
     public abstract void Update();
@@ -321,7 +321,7 @@ public abstract class Light : MonoBehaviour
     //    get => _collisionGroup;
     //}
 
-    internal float rayHit(RaycastHit2D rayHit)//Collider2D fixture, Vector2 point, Vector2 normal, float fraction
+    internal void rayHit(RaycastHit2D rayHit)//Collider2D fixture, Vector2 point, Vector2 normal, float fraction
     {
         
         //if ((GlobalCollidesWith != null && GlobalCollisionCategories != null || GlobalCollisionGroup != 0) && !GlobalContactFilter(fixture))
@@ -332,12 +332,14 @@ public abstract class Light : MonoBehaviour
 
         //if (ignoreBody && fixture.attachedRigidbody == GetBody())
         //    return -1;
-        Vector2 point = rayHit.point;
-        float fraction = rayHit.fraction;
-        mx[m_index] = point.x;
-        my[m_index] = point.y;
-        f[m_index] = fraction;
-        return fraction;
+        if (rayHit.collider != null)
+        {
+            Vector2 point = rayHit.point;
+            float fraction = rayHit.fraction;
+            mx[m_index] = point.x;
+            my[m_index] = point.y;
+            f[m_index] = fraction;
+        }
     }
 
     //bool ContactFilter(Collider2D fixtureB)

@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SocialPlatforms.Impl;
 
-public abstract class PositionalLight : Light
+public abstract class PositionalLight : CustomLight
 {
     private Color tmpColor = new();
 
@@ -31,29 +32,14 @@ public abstract class PositionalLight : Light
         start = gameObject.transform.position;
 
         lightMesh = new Mesh();
+        lightMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
         softShadowMesh = new Mesh();
+        softShadowMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
         vertices = new Vector3[lightVertexNum];
         colors = new Color[lightVertexNum];
         SetRayNum(rayNum);
         SetMesh();
     }
-
-    //public struct CustomVertex(Vector2 position, Color color, float fog) : IVertexType
-    //{
-    //    public Vector2 Position = position;
-    //    public Color Color = color;
-    //    public float Fog = fog;
-    //    VertexDeclaration IVertexType.VertexDeclaration
-    //    {
-    //        get => VertexDeclaration;
-    //    }
-
-    //    public static readonly VertexDeclaration VertexDeclaration = new(
-    //        new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0),
-    //        new VertexElement(8, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-    //        new VertexElement(12, VertexElementFormat.Single, VertexElementUsage.Fog, 0)
-    //    );
-    //}
 
     public override void Update()
     {
@@ -66,6 +52,13 @@ public abstract class PositionalLight : Light
 
         dirty = false;
         UpdateMesh();
+        
+        rayHandler.lightRenderedLastFrame++;
+        gameObject.GetComponent<MeshFilter>().mesh = lightMesh;//
+        gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;//
+        // gameObject.GetComponent<MeshRenderer>().sortingOrder = 0;
+        // gameObject.GetComponent<MeshRenderer>().renderingLayerMask = 0;
+        //gameObject.GetComponent<MeshRenderer>().rendererPriority = -1;
     }
 
     public override void Render()
@@ -74,9 +67,11 @@ public abstract class PositionalLight : Light
 
         rayHandler.lightRenderedLastFrame++;
         gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
-        rayHandler.commandBuffer.Clear();
-        rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
-        Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
+        gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
+        
+        // rayHandler.commandBuffer.Clear();
+        // rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
+        // Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
         // Core.GraphicsDevice.SetVertexBuffer(lightMesh);
         // Core.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, lightVertexNum);
 
@@ -221,7 +216,7 @@ public abstract class PositionalLight : Light
             mx[i] = tmpEnd.x;
             tmpEnd.y = endY[i] + start.y;
             my[i] = tmpEnd.y;
-            if (rayHandler.world != null && !xray && !rayHandler.pseudo3d)
+            if (!xray && !rayHandler.pseudo3d)
                 rayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance = (tmpEnd - start).magnitude));
         }
 
@@ -237,50 +232,43 @@ public abstract class PositionalLight : Light
 
     protected void SetMesh()
     {
-        // ray starting point
-
         vertexIndex = 0;
         rayEndIndex = 0;
-        // _fractions = new float[lightVertexNum];
-        // _softShadowFractions = new float[rayNum * 2];
         triangles = new int[lightVertexNum * 2];
-        try
-        {
-
         
         for (var i = 0; i < rayNum; i += 1)
         {
             vertices[vertexIndex] = start;
             colors[vertexIndex] = color;
-            //_fractions[vertexIndex] = 1;
             triangles[vertexIndex] = vertexIndex;
-            //vertices[size] = new CustomVertex(start, color, 1);//* rayHandler.SimToDisplay
             vertexIndex++;
-
+        
             tmpVec.Set(mx[rayEndIndex], my[rayEndIndex]);
-
+        
             vertices[vertexIndex] = tmpVec;
-            //_fractions[vertexIndex] = 1 - f[rayEndIndex];
             colors[vertexIndex] = color * (1 - f[rayEndIndex]);
             triangles[vertexIndex] = vertexIndex;
-            //vertices[size] = new CustomVertex(tmpVec, color, 1 - f[tempIndex]);//* rayHandler.SimToDisplay
             vertexIndex++;
+            
             rayEndIndex++;
-
+        
             tmpVec.Set(mx[rayEndIndex], my[rayEndIndex]);
-
+        
             vertices[vertexIndex] = tmpVec;
-            //_fractions[vertexIndex] = 1 - f[rayEndIndex];
             colors[vertexIndex] = color * (1 - f[rayEndIndex]);
             triangles[vertexIndex] = vertexIndex;
-            //vertices[size] = new CustomVertex(tmpVec, color, 1 - f[tempIndex]);//* rayHandler.SimToDisplay
             vertexIndex++;
         }
+        
+        tmpVec.Set(mx[0], my[0]);
+        
+        vertices[vertexIndex-1] = tmpVec;
+        colors[vertexIndex-1] = color * (1 - f[0]);
+        triangles[vertexIndex-1] = vertexIndex-1;
 
-        lightMesh.SetVertices(vertices, 0, vertexIndex);
+        lightMesh.SetVertices(vertices, 0, vertexIndex); 
         lightMesh.SetColors(colors, 0, vertexIndex);
-        lightMesh.triangles = new int[vertexIndex];
-        Array.Copy(triangles, lightMesh.triangles, vertexIndex);
+        lightMesh.SetTriangles(triangles,  0, vertexIndex, 0);
 
         if (!soft || xray || rayHandler.pseudo3d) return;
 
@@ -293,18 +281,14 @@ public abstract class PositionalLight : Light
             tmpVec.Set(mx[i], my[i]);
             vertices[vertexIndex] = tmpVec;
             colors[vertexIndex] = color * s;
-            //_softShadowFractions[vertexIndex] = s;
             triangles[triangleIndex++] = vertexIndex;
             vertexIndex++;
-            //vertices[vertexIndex++] = new CustomVertex(tmpVec * rayHandler.SimToDisplay, color, s);
 
             tmpVec.Set(mx[i] + s * softShadowLength * cos[i], my[i] + s * softShadowLength * sin[i]);
             vertices[vertexIndex] = tmpVec;
             colors[vertexIndex] = color * s;
-            //_softShadowFractions[vertexIndex] = s;
             triangles[triangleIndex++] = vertexIndex;
             vertexIndex++;
-            //vertices[vertexIndex++] = new CustomVertex(tmpVec * rayHandler.SimToDisplay, Color.Transparent, 0);
             if (vertexIndex >= lightVertexNum)
             {
                 triangles[triangleIndex++] = 0;
@@ -327,13 +311,7 @@ public abstract class PositionalLight : Light
         softShadowMesh.SetColors(colors, 0, vertexIndex);
         softShadowMesh.triangles = new int[triangleIndex];
         Array.Copy(triangles, softShadowMesh.triangles, triangleIndex);
-        
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+       
     }
 
     public float GetBodyOffsetX()
