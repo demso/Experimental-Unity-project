@@ -21,7 +21,7 @@ public class RayHandler : MonoBehaviour
         commandBuffer = new CommandBuffer();
         setAmbientLight(0,0,0,1);
         setShadows(true);
-        useDiffuseLight(false);
+        useDiffuseLight(true);
         camera = GameObject.Find("Main Camera").GetComponent<Camera>();
         //PointLight light = new PointLight(this, 30, Color.cyan, 50, 3, 3);
     }
@@ -29,7 +29,7 @@ public class RayHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //updateAndRender();
+        renderLights();
         //OnPostRender();
        
     }
@@ -50,7 +50,7 @@ public class RayHandler : MonoBehaviour
 
     static int MAX_SHADOW_VERTICES = 64;
 
-    internal static bool isDiffuse = false;
+    internal static bool isDiffuse = true;
 
     //public BlendFunc diffuseBlendFunc = new BlendFunc(Blend.DestinationColor, Blend.Zero);
 
@@ -69,7 +69,7 @@ public class RayHandler : MonoBehaviour
 
     internal bool culling = false;
     internal bool shadows = true;
-    bool blur = true;
+    bool blur = false;
 
     internal bool pseudo3d = false;
     bool shadowColorInterpolation = false;
@@ -97,6 +97,8 @@ public class RayHandler : MonoBehaviour
     public bool Toggle = true;
 
     public CommandBuffer commandBuffer;
+
+    public RenderTexture framBuff;
     
     ~RayHandler()
     {
@@ -106,6 +108,7 @@ public class RayHandler : MonoBehaviour
     public void resizeFBO(int fboWidth, int fboHeight)
     {
         lightMap = new LightMap(this, fboWidth, fboHeight);
+        framBuff = lightMap.frameBuffer;
     }
 
     //public void setCombinedMatrix(Matrix combined, float x, float y, float viewPortWidth, float viewPortHeight)
@@ -130,48 +133,45 @@ public class RayHandler : MonoBehaviour
     public void updateAndRender() //RenderTarget2D
     {
         //RenderHere = ren;
-        updateLights();
+        //updateLights();
         renderLights();
     }
 
-    public void updateLights()
-    {
-        foreach (CustomLight light in lightList)
-        {
-            light.Update();
-        }
-        
-    }
+    // public void updateLights()
+    // {
+    //     foreach (CustomLight light in lightList)
+    //     {
+    //         light.Update();
+    //     }
+    //     
+    // }
 
     public void prepareRender()
     {
         lightRenderedLastFrame = 0;
         
-        
-
         bool useLightMap = shadows || blur;
         if (useLightMap)
         {
             lightMap.frameBuffer.Release();
-            commandBuffer.SetRenderTarget(lightMap.frameBuffer);
+            lightMap.frameBuffer.width = Screen.width;
+            lightMap.frameBuffer.height = Screen.height;
+            lightMap.frameBuffer.depth = 0; 
             commandBuffer.Clear();
-            //Core.GraphicsDevice.SetRenderTarget(lightMap.frameBuffer);
-            //Core.GraphicsDevice.Clear(Color.Transparent);
+            Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+            commandBuffer.SetViewProjectionMatrices(cam.worldToCameraMatrix, cam.projectionMatrix);
+            commandBuffer.SetRenderTarget(lightMap.frameBuffer);
         }
-
-        //simpleBlendFunc.Apply();
-
-        //Effect shader = customLightShader != null ? customLightShader : lightShader;
-
-        //lightShader.Parameters["WorldViewProjection"].SetValue(combined);
-        //lightShader.CurrentTechnique.Passes[0].Apply();
-
         
         foreach (CustomLight light in lightList)
         {
-            //if (customLightShader != null) updateLightShaderPerLight(light);
             light.Render();
         }
+        
+        if (useLightMap)
+            Graphics.ExecuteCommandBuffer(commandBuffer);
+        
+        commandBuffer.Clear();
 
         bool needed = lightRenderedLastFrame > 0;
         if (needed && blur)

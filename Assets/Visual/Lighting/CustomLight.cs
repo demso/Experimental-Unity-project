@@ -57,14 +57,23 @@ public abstract class CustomLight : MonoBehaviour
 
     public void Awake()
     {
-        rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();
-        rayHandler.lightList.Add(this);
         CreateLightMeshGameObject();
         SetRayNum(rayNum);
         SetColor(color);
         SetDistance(distance);
         SetSoftnessLength(distance * 0.1f);
         SetDirection(direction);
+    }
+
+    public void OnEnable()
+    {
+        rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();
+        rayHandler.lightList.Add(this);
+    }
+
+    public void OnDisable()
+    {
+        rayHandler.lightList.Remove(this);
     }
 
     private void CreateLightMeshGameObject()
