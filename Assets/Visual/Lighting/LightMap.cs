@@ -44,25 +44,10 @@ public class LightMap
 
         frameBuffer = new RenderTexture(fboWidth, fboHeight, 0);
         pingPongBuffer = new RenderTexture(fboWidth, fboHeight, 0);
-        //pingPongBuffer = new RenderTarget2D(graphicsDevice, fboWidth, fboHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None, 0, RenderTargetUsage.PlatformContents);
-
-        //spriteBatch = new SpriteBatch(Core.GraphicsDevice);
-
-        //bloomComponent = new BloomComponent();
-        //bloomComponent.Settings = BloomSettings.PresetSettings[1];
 
         lightMapMesh = CreateLightMapMesh();
 
         CreateShaders();
-
-        //Vector2 futher = new Vector2(3.2307692308f / fboWidth, 3.2307692308f / fboHeight);
-        //Vector2 closer = new Vector2(1.3846153846f / fboWidth, 1.3846153846f / fboHeight);
-        //Vector2 f = futher * Vector2.UnitX;
-        //Vector2 c = closer * Vector2.UnitX;
-        //_sampleHorOffsets = new Vector2[5] { -f, -c, Vector2.Zero, c, f };
-        //f = futher * Vector2.UnitY;
-        //c = closer * Vector2.UnitY;
-        //_sampleVertOffsets = new Vector2[5] { -f, -c, Vector2.Zero, c, f };
     }
 
     public void Render()
@@ -145,7 +130,7 @@ public class LightMap
         blurShader.SetFloat("_FBO_W", frameBuffer.width);
         blurShader.SetFloat("_FBO_H", frameBuffer.height);
         
-        for (var i = 0; i < 2; i++)
+        for (var i = 0; i < rayHandler.blurNum; i++)
         {
             cb.SetRenderTarget(pingPongBuffer);
             cb.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);

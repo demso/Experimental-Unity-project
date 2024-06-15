@@ -4,23 +4,6 @@ using UnityEngine.Rendering;
 
 public class PointLight : PositionalLight
 {
-    /// <summary>
-    /// Creates light shaped as a circle with given radius
-    /// 
-    /// @param rayHandler
-    ///            not {@code null} instance of RayHandler
-    /// @param rays
-    ///            number of rays - more rays make light to look more realistic
-    ///            but will decrease performance, can't be less than MIN_RAYS
-    /// @param color
-    ///            color, set to {@code null} to use the default color
-    /// @param distance
-    ///            distance of light, soft shadow length is set to distance * 0.1f
-    /// @param x
-    ///            horizontal position in world coordinates
-    /// @param y
-    ///            vertical position in world coordinates
-    /// </summary>
     public PointLight()
     {
         direction = 0;
@@ -29,30 +12,16 @@ public class PointLight : PositionalLight
     public new void Awake()
     {
         base.Awake();
-        // renderTexture.Release();
-        // renderTexture.width = Screen.width;
-        // renderTexture.height = Screen.height;
-        // renderTexture.depth = 0;
-        // renderTexture.Create();
-        //pars = new RenderParams(rayHandler.lightShader);
-        //pars.layer = 0;
         pars.renderingLayerMask = 5;
-        
-        
-        cb = new CommandBuffer();
     }
 
-    public RenderTexture renderTexture;
-    public CommandBuffer cb;
-
-
+    internal RenderTexture renderTexture;
+    
     private RenderParams pars;
 
     public override void Update()
     {
-        SetPosition(gameObject.transform.position);
-        
-        //UpdateBody();
+        UpdateBody();
         if (dirty) SetEndPoints();
 
         if (Cull()) return;
@@ -62,29 +31,8 @@ public class PointLight : PositionalLight
         UpdateMesh();
         
         rayHandler.lightRenderedLastFrame++;
-        //gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
-        //gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
         
         lightMesh.bounds = bounds;
-        
-        // renderTexture.Release();
-        // renderTexture.width = Screen.width;
-        // renderTexture.height = Screen.height;
-        // renderTexture.depth = 0;
-        // renderTexture.Create();
-        // cb.SetRenderTarget(renderTexture);
-        // Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        // cb.SetViewProjectionMatrices(cam.worldToCameraMatrix, cam.projectionMatrix);
-        
-        //cb.DrawMesh(lightMesh, gameObject.transform.localToWorldMatrix, rayHandler.lightShader);
-        
-        //Graphics.ExecuteCommandBuffer(cb);
-        //Graphics.DrawTexture(new Rect(0,0,Screen.width, Screen.height), renderTexture);
-        // var pars = new RenderParams(rayHandler.lightShader);
-        // pars.layer = 0;
-        // pars.renderingLayerMask = 5;
-        // pars.rendererPriority = -1;
-        // Graphics.RenderMesh(pars, lightMesh, 0, gameObject.transform.localToWorldMatrix);
     }
     
     public override void SetDistance(float dist)
@@ -94,9 +42,6 @@ public class PointLight : PositionalLight
         dirty = true;
     }
 
-    /// <summary>
-    /// Updates light basing on it's distance and rayNum
-    /// </summary>
     void SetEndPoints()
     {
         float angleNum = 360f / (rayNum);
@@ -113,11 +58,7 @@ public class PointLight : PositionalLight
             endX[i] = distance * cos[i];
         }
     }
-
-    /// <summary>
-    /// Not applicable for this light type
-    /// </summary>
-    [Obsolete]
+    
     public override void SetDirection(float directionDegree)
     {
     }

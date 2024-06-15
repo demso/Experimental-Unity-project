@@ -7,15 +7,8 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public abstract class PositionalLight : CustomLight
 {
-    private Color tmpColor = new();
-
     protected Vector2 tmpEnd = new();
-    public Vector2 start = new();
-
-    protected Rigidbody2D body;
-    protected float bodyOffsetX;
-    protected float bodyOffsetY;
-    protected float bodyAngleOffset;
+    internal Vector2 start = new();
 
     protected float[] sin;
     protected float[] cos;
@@ -31,10 +24,8 @@ public abstract class PositionalLight : CustomLight
     public new void Awake()
     {
         base.Awake();
-        //start = gameObject.transform.position;
 
         lightMesh = new Mesh();
-        //lightMesh.bounds = new Bounds(new Vector3(-100, -100), new Vector3(100, 100));
         softShadowMesh = new Mesh();
         softShadowMesh.bounds = new Bounds(new Vector3(), new Vector3(100, 100));
         
@@ -44,8 +35,6 @@ public abstract class PositionalLight : CustomLight
 
     public override void Update()
     {
-        //SetPosition(gameObject.transform.position);
-        
         UpdateBody();
 
         if (Cull()) return;
@@ -53,67 +42,26 @@ public abstract class PositionalLight : CustomLight
 
         dirty = false;
         UpdateMesh();
-        
-        //gameObject.GetComponent<MeshFilter>().mesh = lightMesh;
-        //gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;
-        //gameObject.GetComponent<MeshRenderer>().material = rayHandler.lightShader;//
-        // gameObject.GetComponent<MeshRenderer>().sortingOrder = 0;
-        // gameObject.GetComponent<MeshRenderer>().renderingLayerMask = 0;
-        //gameObject.GetComponent<MeshRenderer>().rendererPriority = -1;
     }
 
-    public override void Render()
+    public override void Render() 
     {
         if (rayHandler.culling && culled) return;
 
         rayHandler.lightRenderedLastFrame++;
         
         rayHandler.commandBuffer.DrawMesh(lightMesh, gameObject.transform.localToWorldMatrix, rayHandler.lightShader);
-        //Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
 
         if (soft && !xray)
         {
             rayHandler.commandBuffer.DrawMesh(softShadowMesh, gameObject.transform.localToWorldMatrix, rayHandler.lightShader);
-            //     gameObject.GetComponent<MeshFilter>().mesh  = softShadowMesh;
-            //     rayHandler.commandBuffer.Clear();
-            //     rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
-            //     Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
-            //     // Core.GraphicsDevice.SetVertexBuffer(softShadowMesh);
-            //     // Core.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, softShadowVertexNum);
         }
-    }
-
-    public override void AttachToBody(Rigidbody2D body)
-    {
-        AttachToBody(body, 0f, 0f, 0f);
-    }
-
-    public void AttachToBody(Rigidbody2D body, float offsetX, float offsetY)
-    {
-        AttachToBody(body, offsetX, offsetY, 0f);
-    }
-
-    public void AttachToBody(Rigidbody2D body, float offsetX, float offsetY, float degrees)
-    {
-        this.body = body;
-        bodyOffsetX = offsetX;
-        bodyOffsetY = offsetY;
-        bodyAngleOffset = degrees;
-        if (staticLight) dirty = true;
     }
 
     public override Vector2 GetPosition()
     {
-        tmpPosition.x = start.x;
-        tmpPosition.y = start.y;
-        return tmpPosition;
+        return gameObject.transform.position;
     }
-
-    public override Rigidbody2D GetBody()
-    {
-        return body;
-    }
-
     public override float GetX()
     {
         return start.x;
@@ -122,20 +70,6 @@ public abstract class PositionalLight : CustomLight
     public override float GetY()
     {
         return start.y;
-    }
-
-    public override void SetPosition(float x, float y)
-    {
-        start.x = x;
-        start.y = y;
-        if (staticLight) dirty = true;
-    }
-
-    public override void SetPosition(Vector2 position)
-    {
-        start.x = position.x;
-        start.y = position.y;
-        if (staticLight) dirty = true;
     }
 
     public bool Contains(Vector2 pos)
@@ -196,18 +130,17 @@ public abstract class PositionalLight : CustomLight
 
     protected void UpdateBody()
     {
-        if (body == null || staticLight) return;
+        if (staticLight) return;
 
-        var vec = body.position;
+        GameObject go = gameObject;
 
-        var angle = body.rotation;
-        var cos = (float)Math.Cos(angle);
-        var sin = (float)Math.Sin(angle);
-        var dX = bodyOffsetX * cos - bodyOffsetY * sin;
-        var dY = bodyOffsetX * sin + bodyOffsetY * cos;
-        start.x = vec.x + dX;
-        start.y = vec.y + dY;
-        SetDirection(bodyAngleOffset + angle); // rads to degrees * Mathf.Rad2Deg
+        var vec = go.transform.position;
+
+        var angle = go.transform.rotation.eulerAngles.z;
+        
+        start.x = vec.x;
+        start.y = vec.y;
+        SetDirection(angle * Mathf.Rad2Deg); // rads to degrees * Mathf.Rad2Deg
     }
 
     protected void UpdateMesh()
@@ -331,35 +264,5 @@ public abstract class PositionalLight : CustomLight
         softShadowMesh.SetVertices(softVerts, 0, vertexIndex);
         softShadowMesh.SetColors(softColors, 0, vertexIndex);
         softShadowMesh.SetTriangles(softTri, 0, triangleIndex, 0, false);
-    }
-
-    public float GetBodyOffsetX()
-    {
-        return bodyOffsetX;
-    }
-
-    public float GetBodyOffsetY()
-    {
-        return bodyOffsetY;
-    }
-
-    public float GetBodyAngleOffset()
-    {
-        return bodyAngleOffset;
-    }
-
-    public void SetBodyOffsetX(float bodyOffsetX)
-    {
-        this.bodyOffsetX = bodyOffsetX;
-    }
-
-    public void SetBodyOffsetY(float bodyOffsetY)
-    {
-        this.bodyOffsetY = bodyOffsetY;
-    }
-
-    public void SetBodyAngleOffset(float bodyAngleOffset)
-    {
-        this.bodyAngleOffset = bodyAngleOffset;
     }
 }

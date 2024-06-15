@@ -19,7 +19,7 @@ public abstract class CustomLight : MonoBehaviour
 
     public bool active = true;
     public bool soft = false;
-    protected bool xray = false;
+    public bool xray = false;
     public bool staticLight = false;
     protected bool culled = false;
     protected bool dirty = true;
@@ -45,11 +45,9 @@ public abstract class CustomLight : MonoBehaviour
     public void Awake()
     {
         rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();
-        CreateLightMeshGameObject();
         SetRayNum(rayNum);
         SetColor(color);
         SetDistance(distance);
-        //SetSoftnessLength(distance * 0.1f);
         SetDirection(direction);
     }
 
@@ -64,14 +62,6 @@ public abstract class CustomLight : MonoBehaviour
         rayHandler.lightList.Remove(this);
     }
 
-    private void CreateLightMeshGameObject()
-    {
-        // ((Component)this).gameObject.AddComponent<MeshFilter>();
-        // ((Component)this).gameObject.AddComponent<MeshRenderer>();
-        //lightMeshGameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
-        //gameObject.SetActive(false);
-    }
-
     public abstract void Update();
 
     public abstract void Render();
@@ -79,14 +69,6 @@ public abstract class CustomLight : MonoBehaviour
     public abstract void SetDistance(float dist);
 
     public abstract void SetDirection(float directionDegree);
-
-    public abstract void AttachToBody(Rigidbody2D body);
-
-    public abstract Rigidbody2D GetBody();
-
-    public abstract void SetPosition(float x, float y);
-
-    public abstract void SetPosition(Vector2 position);
 
     public abstract float GetX();
 
