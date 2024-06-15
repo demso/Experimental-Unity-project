@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 public class LightMap
 {
     public RenderTexture frameBuffer;
-    //private RenderTarget2D pingPongBuffer;
+    public RenderTexture pingPongBuffer;
     private GameObject lightMapMesh;
 
     private RayHandler rayHandler;
@@ -14,6 +14,10 @@ public class LightMap
     private Material diffuseShader;
     private Material shadowShader;
     private Material withoutShadowShader;
+    private Material blurShader;
+    
+
+    private Mesh baseMesh, baseMesh2;
 
     //CommandBuffer commandBuffer = new CommandBuffer();
 
@@ -39,6 +43,7 @@ public class LightMap
         this.fboHeight = fboHeight;
 
         frameBuffer = new RenderTexture(fboWidth, fboHeight, 0);
+        pingPongBuffer = new RenderTexture(fboWidth, fboHeight, 0);
         //pingPongBuffer = new RenderTarget2D(graphicsDevice, fboWidth, fboHeight, false, SurfaceFormat.ColorSRgb, DepthFormat.None, 0, RenderTargetUsage.PlatformContents);
 
         //spriteBatch = new SpriteBatch(Core.GraphicsDevice);
@@ -134,40 +139,37 @@ public class LightMap
     }
 
     public void GaussianBlur()
-    {
-       // bloomComponent.Draw(frameBuffer);
-    }
-
-    public void Dispose()
-    {
-        DisposeShaders();
-
-        //lightMapMesh.Dispose();
-
-        //frameBuffer.Dispose();
-        //pingPongBuffer.Dispose();
-
-        //bloomComponent.UnloadContent();
+    { 
+        var cb = rayHandler.commandBuffer;
+        pingPongBuffer.Release();
+        
+        for (var i = 0; i < 3; i++)
+        {
+            cb.SetRenderTarget(pingPongBuffer);
+            cb.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            blurShader.SetTexture("_MainTex", frameBuffer);
+            blurShader.SetVector("_Dir", new Vector4(0, 1));
+            cb.DrawMesh(baseMesh, Matrix4x4.identity, blurShader);
+            
+            Graphics.ExecuteCommandBuffer(cb);
+            cb.Clear();
+        
+            cb.SetRenderTarget(frameBuffer);
+            blurShader.SetVector("_Dir", new Vector4(1, 0));
+            blurShader.SetTexture("_MainTex", pingPongBuffer);
+            cb.DrawMesh(baseMesh, Matrix4x4.identity, blurShader);
+        
+            Graphics.ExecuteCommandBuffer(cb);
+            cb.Clear();
+        }
     }
 
     internal void CreateShaders()
     {
-        DisposeShaders();
-
         shadowShader = new Material(Shader.Find("z/ShadowShader"));
-        
-
         diffuseShader = new Material(Shader.Find("z/DiffuseShader"));
-
         withoutShadowShader = new Material(Shader.Find("z/WithoutShadowSHader"));
-
-    }
-
-    private void DisposeShaders()
-    {
-        //shadowShader?.Dispose();
-        //diffuseShader?.Dispose();
-        //withoutShadowShader?.Dispose();
+        blurShader = new Material(Shader.Find("z/BlurShader"));
     }
 
     private GameObject CreateLightMapMesh()
@@ -201,15 +203,29 @@ public class LightMap
         //vertices[2].TextureCoordinate = new Vector2(1f, 1f);
         //vertices[3].TextureCoordinate = new Vector2(1f, 0f);
 
-        Mesh mesh = new Mesh();
+        baseMesh = new Mesh();
+        baseMesh2 = new Mesh();
 
-        mesh.vertices = vertices;
-        mesh.uv = uv;
-        mesh.triangles = triangles;
+        baseMesh.vertices = vertices;
+        baseMesh.uv = uv;
+        baseMesh.triangles = triangles;
+        baseMesh.RecalculateBounds(MeshUpdateFlags.DontRecalculateBounds);
+        baseMesh.bounds = new Bounds(new Vector3(0,0,0), new Vector3(10000,10000,0));
+        
+        uv[0] = new Vector2(0, 1);
+        uv[1] = new Vector2(1, 1);
+        uv[2] = new Vector2(0, 0);
+        uv[3] = new Vector2(1, 0);
+        
+        baseMesh2.vertices = vertices;
+        baseMesh2.uv = uv;
+        baseMesh2.triangles = triangles;
+        baseMesh2.RecalculateBounds(MeshUpdateFlags.DontRecalculateBounds);
+        baseMesh2.bounds = new Bounds(new Vector3(0,0,0), new Vector3(10000,10000,0));
 
         GameObject gameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
         //gameObject.SetActive(false);
-        gameObject.GetComponent<MeshFilter>().mesh = mesh;
+        gameObject.GetComponent<MeshFilter>().mesh = baseMesh;
         
         
         return gameObject;

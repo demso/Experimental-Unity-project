@@ -32,7 +32,7 @@ public abstract class CustomLight : MonoBehaviour
     public float distance = 50;
     public float direction;
     //protected Color colorF;
-    public float softShadowLength = 2.5f;
+    public float softShadowLength = 0.5f;
 
     protected Mesh lightMesh;
     protected Mesh softShadowMesh;
@@ -57,11 +57,12 @@ public abstract class CustomLight : MonoBehaviour
 
     public void Awake()
     {
+        rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();
         CreateLightMeshGameObject();
         SetRayNum(rayNum);
         SetColor(color);
         SetDistance(distance);
-        SetSoftnessLength(distance * 0.1f);
+        //SetSoftnessLength(distance * 0.1f);
         SetDirection(direction);
     }
 

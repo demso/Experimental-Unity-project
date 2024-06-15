@@ -26,7 +26,7 @@ public abstract class PositionalLight : CustomLight
     private Vector3[] vertices;
     private Color[] colors;
 
-    protected Bounds bounds = new Bounds(new Vector3(), new Vector3(100,100,0));
+    protected Bounds bounds = new Bounds(new Vector3(), new Vector3(1000,1000,0));
 
     public new void Awake()
     {
@@ -73,12 +73,13 @@ public abstract class PositionalLight : CustomLight
 
         if (soft && !xray)
         {
-        //     gameObject.GetComponent<MeshFilter>().mesh  = softShadowMesh;
-        //     rayHandler.commandBuffer.Clear();
-        //     rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
-        //     Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
-        //     // Core.GraphicsDevice.SetVertexBuffer(softShadowMesh);
-        //     // Core.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, softShadowVertexNum);
+            rayHandler.commandBuffer.DrawMesh(softShadowMesh, gameObject.transform.localToWorldMatrix, rayHandler.lightShader);
+            //     gameObject.GetComponent<MeshFilter>().mesh  = softShadowMesh;
+            //     rayHandler.commandBuffer.Clear();
+            //     rayHandler.commandBuffer.DrawRenderer(gameObject.GetComponent<MeshRenderer>(), rayHandler.lightShader);
+            //     Graphics.ExecuteCommandBuffer(rayHandler.commandBuffer);
+            //     // Core.GraphicsDevice.SetVertexBuffer(softShadowMesh);
+            //     // Core.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, softShadowVertexNum);
         }
     }
 
@@ -179,6 +180,9 @@ public abstract class PositionalLight : CustomLight
         vertices = new Vector3[lightVertexNum];
         colors = new Color[lightVertexNum];
         triangles = new int[lightVertexNum * 2];
+        softTri = new int[lightVertexNum * 2];
+        softColors = new Color[lightVertexNum];
+        softVerts = new Vector3[lightVertexNum];
     }
 
     protected bool Cull()
@@ -243,6 +247,10 @@ public abstract class PositionalLight : CustomLight
     // private float[] _fractions;
     // private float[] _softShadowFractions;
     private int[] triangles;
+
+    private Vector3[] softVerts;
+    private Color[] softColors;
+    private int[] softTri;
     Vector2 tmpVec;
 
     protected void SetMesh()
@@ -284,46 +292,46 @@ public abstract class PositionalLight : CustomLight
         lightMesh.SetColors(colors, 0, vertexIndex);
         lightMesh.SetTriangles(triangles,  0, vertexIndex, 0, false);
 
-        // if (!soft || xray || rayHandler.pseudo3d) return;
-        //
-        // var triangleIndex = 0;
-        //
-        // vertexIndex = 0;
-        // for (var i = 0; i < rayNum; i++)
-        // {
-        //     var s = 1 - f[i];
-        //     tmpVec.Set(mx[i], my[i]);
-        //     vertices[vertexIndex] = tmpVec;
-        //     colors[vertexIndex] = color * s;
-        //     triangles[triangleIndex++] = vertexIndex;
-        //     vertexIndex++;
-        //
-        //     tmpVec.Set(mx[i] + s * softShadowLength * cos[i], my[i] + s * softShadowLength * sin[i]);
-        //     vertices[vertexIndex] = tmpVec;
-        //     colors[vertexIndex] = color * s;
-        //     triangles[triangleIndex++] = vertexIndex;
-        //     vertexIndex++;
-        //     if (vertexIndex >= lightVertexNum)
-        //     {
-        //         triangles[triangleIndex++] = 0;
-        //
-        //         triangles[triangleIndex++] = 0;
-        //         triangles[triangleIndex++] = vertexIndex - 1;
-        //         triangles[triangleIndex++] = 1;
-        //     }
-        //     else
-        //     {
-        //         triangles[triangleIndex++] = vertexIndex;
-        //
-        //         triangles[triangleIndex++] = vertexIndex;
-        //         triangles[triangleIndex++] = vertexIndex - 1;
-        //         triangles[triangleIndex++] = vertexIndex + 1;
-        //     }
-        // }
-        //
-        // softShadowMesh.SetVertices(vertices, 0, vertexIndex);
-        // softShadowMesh.SetColors(colors, 0, vertexIndex);
-        // softShadowMesh.SetTriangles(triangles, 0, triangleIndex, 0, false);
+        if (!soft || xray || rayHandler.pseudo3d) return;
+        
+        var triangleIndex = 0;
+        
+        vertexIndex = 0;
+        for (var i = 0; i < rayNum; i++)
+        {
+            var s = 1 - f[i];
+            tmpVec.Set(mx[i], my[i]);
+            softVerts[vertexIndex] = tmpVec;
+            softColors[vertexIndex] = color * s;
+            softTri[triangleIndex++] = vertexIndex;
+            vertexIndex++;
+        
+            tmpVec.Set(mx[i] + s * softShadowLength * cos[i], my[i] + s * softShadowLength * sin[i]);
+            softVerts[vertexIndex] = tmpVec;
+            softColors[vertexIndex] = color * s;
+            softTri[triangleIndex++] = vertexIndex;
+            vertexIndex++;
+            if (vertexIndex >= rayNum * 2)
+            {
+                softTri[triangleIndex++] = 0;
+        
+                softTri[triangleIndex++] = 0;
+                softTri[triangleIndex++] = vertexIndex - 1;
+                softTri[triangleIndex++] = 1;
+            }
+            else
+            {
+                softTri[triangleIndex++] = vertexIndex;
+        
+                softTri[triangleIndex++] = vertexIndex;
+                softTri[triangleIndex++] = vertexIndex - 1;
+                softTri[triangleIndex++] = vertexIndex + 1;
+            }
+        }
+        
+        softShadowMesh.SetVertices(softVerts, 0, vertexIndex);
+        softShadowMesh.SetColors(softColors, 0, vertexIndex);
+        softShadowMesh.SetTriangles(softTri, 0, triangleIndex, 0, false);
        
     }
 

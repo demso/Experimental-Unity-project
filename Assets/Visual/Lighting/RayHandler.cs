@@ -69,7 +69,7 @@ public class RayHandler : MonoBehaviour
 
     internal bool culling = false;
     internal bool shadows = true;
-    bool blur = false;
+    bool blur = true;
 
     internal bool pseudo3d = false;
     bool shadowColorInterpolation = false;
@@ -98,7 +98,7 @@ public class RayHandler : MonoBehaviour
 
     public CommandBuffer commandBuffer;
 
-    public RenderTexture framBuff;
+    public RenderTexture framBuff, blurBuff;
     
     ~RayHandler()
     {
@@ -109,6 +109,7 @@ public class RayHandler : MonoBehaviour
     {
         lightMap = new LightMap(this, fboWidth, fboHeight);
         framBuff = lightMap.frameBuffer;
+        blurBuff = lightMap.pingPongBuffer;
     }
 
     //public void setCombinedMatrix(Matrix combined, float x, float y, float viewPortWidth, float viewPortHeight)
@@ -154,9 +155,9 @@ public class RayHandler : MonoBehaviour
         if (useLightMap)
         {
             lightMap.frameBuffer.Release();
-            lightMap.frameBuffer.width = Screen.width;
-            lightMap.frameBuffer.height = Screen.height;
-            lightMap.frameBuffer.depth = 0; 
+            // lightMap.frameBuffer.width = Screen.width;
+            // lightMap.frameBuffer.height = Screen.height;
+            // lightMap.frameBuffer.depth = 0; 
             commandBuffer.Clear();
             Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
             commandBuffer.SetViewProjectionMatrices(cam.worldToCameraMatrix, cam.projectionMatrix);
@@ -182,6 +183,8 @@ public class RayHandler : MonoBehaviour
     {
         prepareRender();
         lightMap.Render();
+        framBuff = lightMap.frameBuffer;
+        blurBuff = lightMap.pingPongBuffer;
     }
 
     public void renderOnly()

@@ -311,6 +311,7 @@ MonoBehaviour:
   SimToDisplay: 32
   Toggle: 1
   framBuff: {fileID: 0}
+  blurBuff: {fileID: 0}
 --- !u!4 &565676285
 Transform:
   m_ObjectHideFlags: 0
@@ -14358,7 +14359,7 @@ MonoBehaviour:
   rayNum: 1300
   distance: 50
   direction: 0
-  softShadowLength: 2.5
+  softShadowLength: 0.5
   start: {x: 0, y: 0}
   renderTexture: {fileID: 8400000, guid: fe8ea0322be43704382f8aabe7e41f6a, type: 2}
 --- !u!4 &1250079918
@@ -14396,7 +14397,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f77fb41c11762fb46adba8448f8b35f7, type: 2}
+  - {fileID: 2100000, guid: 63020861614c6224c83902af61bda836, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
