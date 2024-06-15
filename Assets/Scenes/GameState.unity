@@ -14356,10 +14356,10 @@ MonoBehaviour:
   active: 1
   soft: 1
   staticLight: 0
-  rayNum: 1300
+  rayNum: 3
   distance: 50
   direction: 0
-  softShadowLength: 0.5
+  softShadowLength: 1.5
   start: {x: 0, y: 0}
   renderTexture: {fileID: 8400000, guid: fe8ea0322be43704382f8aabe7e41f6a, type: 2}
 --- !u!4 &1250079918
