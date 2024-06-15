@@ -10,13 +10,13 @@ Shader "z/BlurShader"
     SubShader
     {
         
-        Tags { "Queue"="Transparent" }
+        Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
         // No culling or depth
         Cull Off ZWrite Off ZTest Always
 
         Pass
         {
-            Blend SrcAlpha One
+            Blend SrcAlpha Zero
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -45,8 +45,8 @@ Shader "z/BlurShader"
  
             v2f vert (appdata v)
             {
-                float2 futher = float2(3.2307692308 / 262, 3.2307692308 / 226);
-                float2 close = float2(1.3846153846 / 262, 1.3846153846 / 226);
+                float2 futher = float2(3.2307692308 / 100, 3.2307692308 / 100);
+                float2 close = float2(1.3846153846 / 100, 1.3846153846 / 100);
                 
                 float2 f = futher * _Dir.xy;
                 float2 c = close  * _Dir.xy;

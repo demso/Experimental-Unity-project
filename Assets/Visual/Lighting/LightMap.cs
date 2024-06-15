@@ -147,7 +147,7 @@ public class LightMap
         {
             cb.SetRenderTarget(pingPongBuffer);
             cb.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-            blurShader.SetTexture("_MainTex", frameBuffer);
+            blurShader.SetTexture("_MainTex" , frameBuffer);
             blurShader.SetVector("_Dir", new Vector4(0, 1));
             cb.DrawMesh(baseMesh, Matrix4x4.identity, blurShader);
             
