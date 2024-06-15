@@ -155,9 +155,6 @@ public class RayHandler : MonoBehaviour
         if (useLightMap)
         {
             lightMap.frameBuffer.Release();
-            // lightMap.frameBuffer.width = Screen.width;
-            // lightMap.frameBuffer.height = Screen.height;
-            // lightMap.frameBuffer.depth = 0; 
             commandBuffer.Clear();
             Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
             commandBuffer.SetViewProjectionMatrices(cam.worldToCameraMatrix, cam.projectionMatrix);

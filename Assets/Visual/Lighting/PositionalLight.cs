@@ -308,7 +308,7 @@ public abstract class PositionalLight : CustomLight
         
             tmpVec.Set(mx[i] + s * softShadowLength * cos[i], my[i] + s * softShadowLength * sin[i]);
             softVerts[vertexIndex] = tmpVec;
-            softColors[vertexIndex] = color * s;
+            softColors[vertexIndex] = new Color(0, 0, 0, 0);
             softTri[triangleIndex++] = vertexIndex;
             vertexIndex++;
             if (vertexIndex >= rayNum * 2)
@@ -328,11 +328,9 @@ public abstract class PositionalLight : CustomLight
                 softTri[triangleIndex++] = vertexIndex + 1;
             }
         }
-        
         softShadowMesh.SetVertices(softVerts, 0, vertexIndex);
         softShadowMesh.SetColors(softColors, 0, vertexIndex);
         softShadowMesh.SetTriangles(softTri, 0, triangleIndex, 0, false);
-       
     }
 
     public float GetBodyOffsetX()

@@ -42,19 +42,6 @@ public abstract class CustomLight : MonoBehaviour
     protected float[] f;
     protected int m_index = 0;
 
-    //protected static readonly LightData tmpData = new LightData(0f);
-
-    // protected readonly List<Mesh> dynamicShadowMeshes = new List<Mesh>();
-    // protected readonly List<Collider2D> affectedFixtures = new List<Collider2D>();
-    // protected readonly List<Vector2> tmpVerts = new List<Vector2>();
-    //
-    // protected readonly List<int> ind = new List<int>();
-    //
-    // protected readonly Vector2 tmpStart = new Vector2();
-    // protected readonly Vector2 tmpEnd = new Vector2();
-    // protected readonly Vector2 tmpVec = new Vector2();
-    // protected readonly Vector2 center = new Vector2();
-
     public void Awake()
     {
         rayHandler = GameObject.Find("Light Renderer").GetComponent<RayHandler>();

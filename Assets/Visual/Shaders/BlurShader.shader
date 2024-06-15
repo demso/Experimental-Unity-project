@@ -6,6 +6,8 @@ Shader "z/BlurShader"
     {
         _Dir ("Direction", Vector) = (0, 1, 1, 1)
         _MainTex ("Texture", 2D) = "blue" {}
+        _FBO_W ("FBO_W", Float) = 480
+        _FBO_H ("FBO_W", Float) = 270
     }
     SubShader
     {
@@ -20,8 +22,6 @@ Shader "z/BlurShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #define FBO_W 480
-            #define FBO_H 270
 
             struct appdata
             {
@@ -42,11 +42,13 @@ Shader "z/BlurShader"
 
             vector _Dir;
             sampler2D _MainTex;
+            float _FBO_W;
+            float _FBO_H;
  
             v2f vert (appdata v)
             {
-                float2 futher = float2(3.2307692308 / 100, 3.2307692308 / 100);
-                float2 close = float2(1.3846153846 / 100, 1.3846153846 / 100);
+                float2 futher = float2(3.2307692308 / _FBO_W, 3.2307692308 / _FBO_H);
+                float2 close = float2(1.3846153846 / _FBO_W, 1.3846153846 / _FBO_H);
                 
                 float2 f = futher * _Dir.xy;
                 float2 c = close  * _Dir.xy;
@@ -64,7 +66,7 @@ Shader "z/BlurShader"
                 
                 return o;
             }
-
+            
             fixed4 frag (v2f i) : SV_Target
             {
                 float center = 0.2270270270;

@@ -142,21 +142,23 @@ public class LightMap
     { 
         var cb = rayHandler.commandBuffer;
         pingPongBuffer.Release();
+        blurShader.SetFloat("_FBO_W", frameBuffer.width);
+        blurShader.SetFloat("_FBO_H", frameBuffer.height);
         
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 2; i++)
         {
             cb.SetRenderTarget(pingPongBuffer);
             cb.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
             blurShader.SetTexture("_MainTex" , frameBuffer);
-            blurShader.SetVector("_Dir", new Vector4(0, 1));
+            blurShader.SetVector("_Dir", new Vector4(1, 0));
             cb.DrawMesh(baseMesh, Matrix4x4.identity, blurShader);
             
             Graphics.ExecuteCommandBuffer(cb);
             cb.Clear();
         
             cb.SetRenderTarget(frameBuffer);
-            blurShader.SetVector("_Dir", new Vector4(1, 0));
             blurShader.SetTexture("_MainTex", pingPongBuffer);
+            blurShader.SetVector("_Dir", new Vector4(0, 1));
             cb.DrawMesh(baseMesh, Matrix4x4.identity, blurShader);
         
             Graphics.ExecuteCommandBuffer(cb);
