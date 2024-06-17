@@ -9,10 +9,9 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
-  - My Layer
   - 
   - 
   - 
@@ -22,6 +21,7 @@ TagManager:
   - 
   - 
   - 
+  - Ignore Light
   - 
   - 
   - 

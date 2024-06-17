@@ -24,9 +24,4 @@ public class GameHandlerScript : MonoBehaviour
             Globals.camera.orthographicSize += 1;
         }
     }
-
-    void FixedUpdate()
-    {
-        
-    }
 }

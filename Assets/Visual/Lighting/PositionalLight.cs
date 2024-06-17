@@ -157,7 +157,7 @@ public abstract class PositionalLight : CustomLight
             tmpEnd.y = endY[i];
             
             if (!xray && !rayHandler.pseudo3d)
-                RayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance));
+                RayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance, layerMask: Int32.MaxValue & ~Globals.IGNORE_LIGHTS_LAYER));
         }
 
         SetMesh();
@@ -165,8 +165,11 @@ public abstract class PositionalLight : CustomLight
     
     public new void RayHit(RaycastHit2D rayHit)
     {
+        
+        //Debug.Log((rayHit.collider.includeLayers.value));
         if (rayHit.collider != null)
         {
+            //Debug.Log((rayHit.collider.includeLayers.value & Globals.TRANSPARENT_CONTACT_FILTER));
             Vector2 point = rayHit.point;
             float fraction = rayHit.fraction;
             mx[m_index] = point.x - start.x;
