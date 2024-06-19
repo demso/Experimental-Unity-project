@@ -14370,6 +14370,7 @@ GameObject:
   - component: {fileID: 1371180198}
   - component: {fileID: 1371180197}
   - component: {fileID: 1371180199}
+  - component: {fileID: 1371180200}
   m_Layer: 0
   m_Name: Obstacles
   m_TagString: Untagged
@@ -14981,6 +14982,18 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &1371180200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1371180195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40e7fb3e08ef734ca84740f35cc11d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1418213921 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8566028295933219308, guid: 8eb28b65709592f42b03a56d930d0b12, type: 3}

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: normal_terrain_4
+  m_Name: door
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 216846182, guid: 928e20256c2e75940a9482cc8c538cb6, type: 3}
+  m_Sprite: {fileID: -308387518, guid: 928e20256c2e75940a9482cc8c538cb6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -31,6 +31,6 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 1
-  m_InstancedGameObject: {fileID: 0}
+  m_InstancedGameObject: {fileID: 7860693821358513151, guid: a24009c02f137714c8ee3e4431b11ab5, type: 3}
   m_Flags: 1
   m_ColliderType: 1
