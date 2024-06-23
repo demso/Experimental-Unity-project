@@ -1,0 +1,36 @@
+{
+    "activeFile": "worldmap.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "tilesets/normal_furniture.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/normal_items.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/normal_monsters.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/normal_terrain.tsx": {
+            "scaleInDock": 1
+        },
+        "worldmap.tmx": {
+            "scale": 2,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 165,
+                "y": 3027
+            }
+        }
+    },
+    "openFiles": [
+        "worldmap.tmx"
+    ],
+    "project": "firstmap.tiled-project",
+    "recentFiles": [
+        "worldmap.tmx"
+    ]
+}
