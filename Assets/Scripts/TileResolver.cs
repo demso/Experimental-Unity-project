@@ -19,7 +19,6 @@ namespace DefaultNamespace
                 if (name != null) 
                     sTiles.Add(name.m_Value, tile);
             }
-            Debug.Log("Ass");
         }
 
         public SuperTile getTile(int id)

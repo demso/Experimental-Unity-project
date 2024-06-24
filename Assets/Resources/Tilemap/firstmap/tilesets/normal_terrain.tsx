@@ -1,84 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="normal_terrain" tilewidth="32" tileheight="32" tilecount="256" columns="16" spacing="2" margin="1">
+<tileset version="1.10" tiledversion="1.10.2" name="normal_terrain" tilewidth="32" tileheight="32" spacing="2" margin="1" tilecount="256" columns="16">
  <image source="../atlases/normal_terrain.png" width="544" height="544"/>
  <tile id="0">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass1"/>
   </properties>
  </tile>
  <tile id="1">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass2"/>
   </properties>
  </tile>
  <tile id="2">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass3"/>
   </properties>
  </tile>
  <tile id="3">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass4"/>
   </properties>
  </tile>
  <tile id="4">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass5"/>
   </properties>
  </tile>
  <tile id="5">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass6"/>
   </properties>
  </tile>
  <tile id="6">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass7"/>
   </properties>
  </tile>
  <tile id="7">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass8"/>
   </properties>
  </tile>
  <tile id="8">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass9"/>
   </properties>
  </tile>
  <tile id="9">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass10"/>
   </properties>
  </tile>
  <tile id="10">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass11"/>
   </properties>
  </tile>
  <tile id="11">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass12"/>
   </properties>
  </tile>
  <tile id="12">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass13"/>
   </properties>
  </tile>
  <tile id="13">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass14"/>
   </properties>
  </tile>
  <tile id="14">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass15"/>
   </properties>
  </tile>
  <tile id="15">
   <properties>
-   <property name="name" value="t_grass"/>
+   <property name="name" value="t_grass16"/>
   </properties>
  </tile>
  <tile id="16">
@@ -237,7 +237,7 @@
  <tile id="46">
   <properties>
    <property name="body type" value="FULL_BODY"/>
-   <property name="name" value="t_wall_beton_sw"/>
+   <property name="name" value="t_wall_beton_se"/>
   </properties>
  </tile>
  <tile id="47">

@@ -54,8 +54,6 @@ namespace SuperTiled2Unity
         [HideInInspector]
         public SerializedDictionary<int, SuperTile> m_Tiles;
 
-        public int ass;
-
         public Vector3Int TiledIndexToGridCell(int index, int offset_x, int offset_y, int stride)
         {
             int x = index % stride;

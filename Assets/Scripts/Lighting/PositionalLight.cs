@@ -157,7 +157,7 @@ public abstract class PositionalLight : CustomLight
             tmpEnd.y = endY[i];
             
             if (!xray && !rayHandler.pseudo3d)
-                RayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance, layerMask: Int32.MaxValue & ~Globals.IGNORE_LIGHTS_LAYER));
+                RayHit(Physics2D.Raycast(start, tmpEnd.normalized, distance, layerMask: Int32.MaxValue & ~LayerMask.GetMask("Ignore Light And Default") & ~Globals.IGNORE_LIGHTS_LAYER));
         }
 
         SetMesh();

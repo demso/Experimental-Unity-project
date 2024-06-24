@@ -1,5 +1,5 @@
 {
-    "activeFile": "worldmap.tmx",
+    "activeFile": "tilesets/normal_terrain.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -15,22 +15,25 @@
             "scaleInDock": 1
         },
         "tilesets/normal_terrain.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "worldmap.tmx": {
             "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 165,
-                "y": 3027
+                "x": 164,
+                "y": 3026
             }
         }
     },
     "openFiles": [
-        "worldmap.tmx"
+        "worldmap.tmx",
+        "tilesets/normal_terrain.tsx"
     ],
     "project": "firstmap.tiled-project",
     "recentFiles": [
-        "worldmap.tmx"
+        "worldmap.tmx",
+        "tilesets/normal_terrain.tsx"
     ]
 }

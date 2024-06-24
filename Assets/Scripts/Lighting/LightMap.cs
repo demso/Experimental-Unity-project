@@ -210,10 +210,9 @@ public class LightMap
         baseMesh2.RecalculateBounds(MeshUpdateFlags.DontRecalculateBounds);
         baseMesh2.bounds = new Bounds(new Vector3(0,0,0), new Vector3(10000,10000,0));
 
-        GameObject gameObject = new GameObject("LightMapMesh", typeof(MeshFilter), typeof(MeshRenderer));
-        //gameObject.SetActive(false);
+        GameObject gameObject = new GameObject("Light Map Mesh", typeof(MeshFilter), typeof(MeshRenderer));
+        gameObject.hideFlags = HideFlags.HideInHierarchy;
         gameObject.GetComponent<MeshFilter>().mesh = baseMesh;
-        
         
         return gameObject;
     }
