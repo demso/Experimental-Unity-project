@@ -41,8 +41,7 @@ namespace Scenes.GameState.Scripts.Players {
         }
 
         private void Update() {
-            CloseObject? closest = GetClosestObject();
-            
+            var closest = GetClosestObject();
             _player.closestObject = (IInteractable) closest?.Interactable ;
             if (closest != null) {
                 selectionGO.transform.position = closest.Value.Position;
