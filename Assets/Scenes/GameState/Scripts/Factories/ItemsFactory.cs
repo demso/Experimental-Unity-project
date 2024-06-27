@@ -7,13 +7,14 @@ namespace Scenes.GameState.Scripts.Factories {
         static Dictionary<string, string> itemNames = new Dictionary<string, string>();
         internal BodyFactory bodyFactory;
         Dictionary<int, Item> container;
+        private int itemsCounter = 0;
 
         public ItemsFactory(Dictionary<int, Item> container, BodyFactory factory) {
             bodyFactory = factory;
             this.container = container;
         }
 
-        public Item GetItem(int uid, string itemId) {
+        public Item GetItem(string itemId) {
             if (itemNames.Count == 0)
                 init();
             if (itemId == null)
@@ -55,7 +56,7 @@ namespace Scenes.GameState.Scripts.Factories {
                 //     createdItem = item;
                 // }
                 default: 
-                    Item item = new Item(uid, itemId, GetNameForID(itemId));
+                    Item item = new Item(++itemsCounter, itemId, GetNameForID(itemId));
                     item.factory = this; 
                     createdItem = item;
                 break;

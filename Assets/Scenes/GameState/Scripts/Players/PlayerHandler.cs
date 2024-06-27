@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 
 namespace Scenes.GameState.Scripts.Players {
     public partial class PlayerHandler : MonoBehaviour {
-        public float moveSpeed = 2.5f;
         Vector2 moveImpulse = Vector2.zero;
         private Rigidbody2D body;
         private Texture2D selection;
@@ -14,13 +13,14 @@ namespace Scenes.GameState.Scripts.Players {
 
         private void Awake() {
             body = GetComponent<Rigidbody2D>();
-            _player = GetComponent<Players.Player>();
+            _player = GetComponent<Player>();
             selection = Resources.Load<Texture2D>("Visual/selection");
             selectionGO = new GameObject();
             selectionGO.SetActive(false);
             selectionGO.name = "Selection Sprite";
             selectionGO.hideFlags = HideFlags.HideInHierarchy;
             selectionRenderer = selectionGO.AddComponent<SpriteRenderer>();
+            selectionRenderer.drawMode = SpriteDrawMode.Sliced;
             Sprite sprite = Sprite.Create(selection, new Rect(0, 0, selection.width, selection.height),
                 new Vector2(0.5f, 0.5f), 32);
             selectionRenderer.sprite = sprite;
@@ -29,45 +29,53 @@ namespace Scenes.GameState.Scripts.Players {
 
         void FixedUpdate() {
             moveImpulse.Set(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            moveImpulse = ((moveImpulse * moveSpeed * body.mass) / (1 - Time.fixedDeltaTime * body.drag)) *
+            float speedMult = 1;
+            if (Input.GetKey(KeyCode.LeftShift))
+                speedMult = _player.runMultiplier;
+            else if (Input.GetKey(KeyCode.C))
+                speedMult = _player.sneakMultiplier;
+            _player.currentSpeedMultiplier = speedMult;
+            moveImpulse = ((moveImpulse * _player.normalSpeed * speedMult * body.mass) / (1 - Time.fixedDeltaTime * body.drag)) *
                           Time.fixedDeltaTime * 10f;
             body.AddForce(moveImpulse, ForceMode2D.Impulse);
         }
 
         private void Update() {
-            MonoBehaviour closest = getClosestObject();
+            CloseObject? closest = GetClosestObject();
+            
+            _player.closestObject = (IInteractable) closest?.Interactable ;
             if (closest != null) {
-                selectionGO.transform.position = closest.transform.position;
+                selectionGO.transform.position = closest.Value.Position;
+                Vector2 spriteSize = closest.Value.Collider.bounds.size;
+                spriteSize.x = Mathf.Max(spriteSize.x, 0.5f);
+                spriteSize.y = Mathf.Max(spriteSize.y, 0.5f);
+                selectionRenderer.size = spriteSize;
                 selectionGO.SetActive(true);
                 if (Keyboard.current.eKey.wasPressedThisFrame) {
-                    ((IInteractable)closest).Interact(_player);
+                    ((IInteractable)closest.Value.Interactable).Interact(_player);
                 }
             } else {
                 selectionGO.SetActive(false);  
             }
         }
 
-        public MonoBehaviour getClosestObject() {
-            if (closeObjects.Count == 0)
+        private CloseObject? GetClosestObject() {
+            if (_closeObjects.Count == 0)
                 return null;
-        
-            closeObjects.Sort((a, b) => {
+            _closeObjects.Sort((a, b) => {
                 Vector2 plPos = gameObject.transform.position;
-                Vector2 aPos = a.gameObject.transform.position;
-                Vector2 bPos = b.gameObject.transform.position;
 
-                if ((plPos - aPos).magnitude > (plPos - bPos).magnitude) {
+                if ((plPos - a.Position).magnitude > (plPos - b.Position).magnitude) {
                     return 1;
                 }
 
-                if ((plPos - aPos).magnitude < (plPos - bPos).magnitude) {
+                if ((plPos - a.Position).magnitude < (plPos - b.Position).magnitude) {
                     return -1;
                 }
 
                 return 0;
             });
-
-            return closeObjects[0];
+            return _closeObjects[0];
         }
     }
 }

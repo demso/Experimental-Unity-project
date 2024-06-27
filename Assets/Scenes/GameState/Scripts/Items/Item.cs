@@ -13,7 +13,7 @@ namespace Scenes.GameState.Scripts.Items {
 
         //public Table MouseHandler { get; private set; }
         protected bool isEquipped = false;
-        protected Storage Owner { get; private set; }
+        protected IStorage Owner { get; private set; }
 
         //public UnBox unBox;
 
@@ -27,9 +27,9 @@ namespace Scenes.GameState.Scripts.Items {
         public string description =
             "First you must develop a Skin that implements all the widgets you plan to use in your layout. You can't use a widget if it doesn't have a valid style. Do this how you would usually develop a Skin in Scene Composer.";
 
-        public float spriteWidth = 0.7f;
+        public float spriteWidth = 0.4f;
 
-        public float spriteHeight = 0.7f;
+        public float spriteHeight = 0.4f;
 
         protected GameObject gameObject;
         //protected SpriteBehaviour spriteBehaviour;
@@ -60,10 +60,14 @@ namespace Scenes.GameState.Scripts.Items {
                 PrepareForRendering();
                 PhysicalBody = factory.bodyFactory.ItemBody(position.x, position.y, ref gameObject);
                 gameObject.AddComponent<ItemComponent>().Item = this;
-                var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+                var spriteObject = new GameObject("SpriteObject");
+                spriteObject.transform.parent = gameObject.transform;
+                var spriteRenderer = spriteObject.AddComponent<SpriteRenderer>();
                 var sprite = tile.m_Sprite;
                 spriteRenderer.sprite = sprite;
+                spriteRenderer.drawMode = SpriteDrawMode.Sliced;
                 spriteRenderer.size = new Vector2(spriteWidth, spriteHeight);
+                spriteObject.transform.localPosition = -spriteRenderer.size / 2;
             } else {
                 throw new System.Exception("Item already allocated");
                 //gameObject.transform.position = position;
@@ -123,8 +127,8 @@ namespace Scenes.GameState.Scripts.Items {
             }
         }
 
-        public Vector2 GetPosition() {
-            return gameObject.transform.position;
+        public Vector2? GetPosition() {
+            return gameObject?.transform?.position;
         }
 
         public void ClearPhysicalBody() {
@@ -137,15 +141,11 @@ namespace Scenes.GameState.Scripts.Items {
             return itemName ?? "";
         }
 
-        public object GetData() {
-            return this;
-        }
-
         public void OnInteraction(Player player) {
             player.TakeItem(this);
         }
 
-        public void OnTaking(Storage storage) {
+        public void OnTaking(IStorage storage) {
             Owner = storage;
         }
 
@@ -197,6 +197,10 @@ namespace Scenes.GameState.Scripts.Items {
                 return item.uid == uid;
             }
             return base.Equals(obj);
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
         }
     }
 }

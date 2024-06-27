@@ -217,9 +217,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fd51377569a63047aa16f8de7a29d64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map: {fileID: 0}
-  obstaclesGO: {fileID: 0}
-  tilemap: {fileID: 0}
 --- !u!4 &243873127
 Transform:
   m_ObjectHideFlags: 0
@@ -258,6 +255,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8788130995258597639, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -3930995273877472917, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
       propertyPath: m_Name
       value: worldmap
@@ -265,6 +266,10 @@ PrefabInstance:
     - target: {fileID: -3930995273877472917, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
       propertyPath: m_TagString
       value: Level map
+      objectReference: {fileID: 0}
+    - target: {fileID: -3246177533108534011, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4182913685704943114, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
       propertyPath: m_LocalPosition.x
@@ -305,6 +310,14 @@ PrefabInstance:
     - target: {fileID: 4182913685704943114, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4663016848147253711, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4794371732033603951, guid: fa7c3ffdb2f7d144b9f2d1c2f695c006, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -556,7 +569,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c5e2e5d4f1d3343bec7526e9c05462, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2.5
 --- !u!114 &1119024489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,6 +581,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd4883bb1cfc524409d98804c87f14c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  normalSpeed: 3
+  playerHandler: {fileID: 0}
+  itemRotation: 0
+  needsReload: 0
+  isReloading: 0
+  reloadProgress: 1
+  reloadFactor: 1
 --- !u!58 &1119024490
 CircleCollider2D:
   m_ObjectHideFlags: 0
