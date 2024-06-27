@@ -3,7 +3,6 @@
     "expandedProjectPaths": [
         "."
     ],
-    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "tilesets/normal_furniture.tsx": {
             "scaleInDock": 1
@@ -12,7 +11,8 @@
             "scaleInDock": 1
         },
         "tilesets/normal_monsters.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         },
         "tilesets/normal_terrain.tsx": {
             "scaleInDock": 1,
@@ -22,18 +22,20 @@
             "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 164,
-                "y": 3026
+                "x": 213,
+                "y": 162.75
             }
         }
     },
     "openFiles": [
         "worldmap.tmx",
-        "tilesets/normal_terrain.tsx"
+        "tilesets/normal_terrain.tsx",
+        "tilesets/normal_monsters.tsx"
     ],
-    "project": "firstmap.tiled-project",
+    "project": "",
     "recentFiles": [
         "worldmap.tmx",
+        "tilesets/normal_monsters.tsx",
         "tilesets/normal_terrain.tsx"
     ]
 }

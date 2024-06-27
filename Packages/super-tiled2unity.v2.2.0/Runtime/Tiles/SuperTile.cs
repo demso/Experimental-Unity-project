@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -333,6 +334,15 @@ namespace SuperTiled2Unity
             }
 
             return matTransOut * matFlip * matTransIn;
+        }
+
+        public T GetPropertyOrDefault<T>(string name, T def) {
+            var s = m_CustomProperties.Find(property => property.m_Name.Equals(name))?.m_Value;
+            if (s != null)
+            {
+                return (T)Convert.ChangeType(s, typeof(T));
+            }
+            return def;
         }
     }
 }
