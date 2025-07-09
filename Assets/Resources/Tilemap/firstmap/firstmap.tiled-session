@@ -1,5 +1,5 @@
 {
-    "activeFile": "tilesets/normal_terrain.tsx",
+    "activeFile": "tilesets/normal_monsters.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -22,8 +22,8 @@
             "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 213,
-                "y": 162.75
+                "x": 1600,
+                "y": 1599.75
             }
         }
     },
@@ -35,7 +35,7 @@
     "project": "",
     "recentFiles": [
         "worldmap.tmx",
-        "tilesets/normal_monsters.tsx",
-        "tilesets/normal_terrain.tsx"
+        "tilesets/normal_terrain.tsx",
+        "tilesets/normal_monsters.tsx"
     ]
 }

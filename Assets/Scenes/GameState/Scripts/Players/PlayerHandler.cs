@@ -14,6 +14,7 @@ namespace Scenes.GameState.Scripts.Players {
         private void Awake() {
             body = GetComponent<Rigidbody2D>();
             _player = GetComponent<Player>();
+            _player.playerHandler = this;
             selection = Resources.Load<Texture2D>("Visual/selection");
             selectionGO = new GameObject();
             selectionGO.SetActive(false);
@@ -35,7 +36,7 @@ namespace Scenes.GameState.Scripts.Players {
             else if (Input.GetKey(KeyCode.C))
                 speedMult = _player.sneakMultiplier;
             _player.currentSpeedMultiplier = speedMult;
-            moveImpulse = ((moveImpulse * _player.normalSpeed * speedMult * body.mass) / (1 - Time.fixedDeltaTime * body.drag)) *
+            moveImpulse = ((moveImpulse * _player.normalSpeed * speedMult * body.mass) / (1 - Time.fixedDeltaTime * body.linearDamping)) *
                           Time.fixedDeltaTime * 10f;
             body.AddForce(moveImpulse, ForceMode2D.Impulse);
         }

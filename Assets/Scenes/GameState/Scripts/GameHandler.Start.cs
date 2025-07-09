@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Scenes.GameState.Scripts.Entities;
 using Scenes.GameState.Scripts.Factories;
 using Scenes.GameState.Scripts.Items;
 using Scenes.GameState.Scripts.Tilemap_Scripts;
@@ -10,16 +11,19 @@ using UnityEngine.Tilemaps;
 namespace Scenes.GameState.Scripts {
     public partial class GameHandler : MonoBehaviour {
         private void Start() {
+            Instance = this;
             Globals.camera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
             Globals.player = GameObject.FindWithTag("Player");
             Items = new Dictionary<int, Item>();
             BodyFactory = new BodyFactory();
             ItemsFactory = new ItemsFactory(Items, BodyFactory);
+            MobsFactory = new MobsFactory();
 
             InitTilemap();
 
             Item item = ItemsFactory.GetItem("deagle_44");
             item.Allocate(Globals.player.transform.position);
+            Zombie zombie = MobsFactory.SpawnZombie(Globals.player.transform.position + new Vector3(1, 1, 0 ));
         }
 
         private void InitTilemap() {

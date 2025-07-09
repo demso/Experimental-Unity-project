@@ -6,14 +6,14 @@ using SuperTiled2Unity;
 using UnityEngine;
 
 namespace Scenes.GameState.Scripts.Items {
-    public class Item {
+    public class Item : ScriptableObject {
         public SuperTile tile;
 
         public Rigidbody2D PhysicalBody { get; private set; }
 
         //public Table MouseHandler { get; private set; }
-        protected bool isEquipped = false;
-        protected IStorage Owner { get; private set; }
+        protected internal bool isEquipped = false;
+        protected internal IStorage Owner { get; private set; }
 
         //public UnBox unBox;
 
@@ -28,31 +28,23 @@ namespace Scenes.GameState.Scripts.Items {
             "First you must develop a Skin that implements all the widgets you plan to use in your layout. You can't use a widget if it doesn't have a valid style. Do this how you would usually develop a Skin in Scene Composer.";
 
         public float spriteWidth = 0.4f;
-
         public float spriteHeight = 0.4f;
 
-        protected GameObject gameObject;
+        protected internal GameObject gameObject;
         //protected SpriteBehaviour spriteBehaviour;
-        internal ItemsFactory factory;
+        protected internal ItemsFactory factory;
         public bool IsDisposed { get; private set; }
 
-        internal Item(int uid, SuperTile tile, string itemName) {
+        public void Init(int uid, SuperTile tile, string itemName) {
             this.uid = uid;
             this.tile = tile;
             this.StringID = tile.GetPropertyOrDefault("name", "no_name");
             this.itemName = itemName;
         }
 
-        internal Item(int uid, string iId, string itemName) : this(uid, TileResolver.GetTile(iId), itemName) { }
-
-        // public void SetData(UnBox box, BodyResolver resolver, HUD h, Stage st, ItemsFactory fac)
-        // {
-        //     factory = fac;
-        //     bodyResolver = resolver;
-        //     unBox = box;
-        //     gameStage = st;
-        //     hud = h;
-        // }
+        public void Init(int uid, string iId, string itemName) {
+            Init(uid, TileResolver.GetTile(iId), itemName);
+        }
 
         public Rigidbody2D Allocate(Vector2 position) {
             if (gameObject == null || !gameObject) {
@@ -60,6 +52,7 @@ namespace Scenes.GameState.Scripts.Items {
                 PrepareForRendering();
                 PhysicalBody = factory.bodyFactory.ItemBody(position.x, position.y, ref gameObject);
                 gameObject.AddComponent<ItemComponent>().Item = this;
+                gameObject.name = ToString();
                 var spriteObject = new GameObject("SpriteObject");
                 spriteObject.transform.parent = gameObject.transform;
                 var spriteRenderer = spriteObject.AddComponent<SpriteRenderer>();

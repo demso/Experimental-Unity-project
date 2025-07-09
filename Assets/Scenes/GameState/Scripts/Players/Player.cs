@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GlobalNamespace;
 using JetBrains.Annotations;
+using NaughtyAttributes;
 using Scenes.GameState.Scripts.Entities;
 using Scenes.GameState.Scripts.Items;
 using Scenes.GameState.Scripts.Objects;
@@ -12,11 +13,13 @@ namespace Scenes.GameState.Scripts.Players {
     public class Player : Entity, IStorage {
         public float normalSpeed = 3f;
         [CanBeNull] internal IInteractable closestObject;
-
-        List<Item> inventoryItems = new List<Item>();
+        
+        [ReorderableList]
+        public List<Item> inventoryItems = new List<Item>();
 
         public Item equipedItem;
 
+        [HideInInspector]
         public PlayerHandler playerHandler;
 
         internal float normalSpeedMultiplier = 1;
@@ -24,11 +27,13 @@ namespace Scenes.GameState.Scripts.Players {
         internal float runMultiplier = 1.5f;
         internal float sneakMultiplier = 0.5f;
 
+        [ReadOnly]
         public float itemRotation;
-
+        [ReadOnly]
         public bool needsReload;
+        [ReadOnly]
         public bool isReloading;
-
+        [ReadOnly]
         public float reloadProgress = 1;
         public float reloadFactor = 1f;
 

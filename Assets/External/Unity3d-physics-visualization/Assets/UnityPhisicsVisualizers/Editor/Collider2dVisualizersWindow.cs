@@ -36,6 +36,7 @@ public class Collider2dVisualizersWindow : EditorWindow
         DefaultThickness = 1;
     }
 
+    [Obsolete("Obsolete")]
     void OnGUI()
     {
         #region Colliderd2d

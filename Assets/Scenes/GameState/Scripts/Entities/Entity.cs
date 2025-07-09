@@ -53,7 +53,7 @@ namespace Scenes.GameState.Scripts.Entities {
         }
 
         public virtual Vector2 GetVelocity() {
-            return Body.velocity;
+            return Body.linearVelocity;
         }
 
         public void Init() {

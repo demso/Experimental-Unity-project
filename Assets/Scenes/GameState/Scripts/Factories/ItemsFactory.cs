@@ -1,18 +1,25 @@
 ﻿using System.Collections.Generic;
 using Scenes.GameState.Scripts.Items;
 using SuperTiled2Unity;
+using UnityEngine;
 
 namespace Scenes.GameState.Scripts.Factories {
     public class ItemsFactory { 
         static Dictionary<string, string> itemNames = new Dictionary<string, string>();
         internal BodyFactory bodyFactory;
         Dictionary<int, Item> container;
-        private int itemsCounter = 0;
+        private int _itemsCounter = 0;
+        public int ItemsCounter {
+            get => _itemsCounter;
+            set => _itemsCounter = value;
+        }
 
         public ItemsFactory(Dictionary<int, Item> container, BodyFactory factory) {
             bodyFactory = factory;
             this.container = container;
         }
+
+        
 
         public Item GetItem(string itemId) {
             if (itemNames.Count == 0)
@@ -56,7 +63,8 @@ namespace Scenes.GameState.Scripts.Factories {
                 //     createdItem = item;
                 // }
                 default: 
-                    Item item = new Item(++itemsCounter, itemId, GetNameForID(itemId));
+                    Item item = ScriptableObject.CreateInstance<Item>();
+                    item.Init(_itemsCounter, itemId, GetNameForID(itemId));
                     item.factory = this; 
                     createdItem = item;
                 break;
